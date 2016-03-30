@@ -24,6 +24,12 @@ attempts to guess the original word.
  - utils.py: Helper function for retrieving ndb.Models by urlsafe Key string.
  
 ##Endpoints Added: 
+ - **add_unscramble_word**
+    - Method: POST
+    - Parameters: word
+    - Returns: key of word created
+    - Description: creates word for future games to scramble
+	
  - **get_user_games**
     - Method: GET
     - Parameters: none
