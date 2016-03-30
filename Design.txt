@@ -1,0 +1,11 @@
+The basic game I created was a game of Unscramble-a-word. A user recieves a target
+word and has a limited number of attempts to guess the target word. The first 
+issue I ran into was how to implement the words, I decided words should be a full 
+fledged entity, that way as I further development additional features and 
+properties could be set in e.g. users create words for other users, no user can play 
+own word. I added a Wins property to the User model to help keep track of rankings, 
+and a recieves_updates boolean if the user chooses to opt out of emails. As for 
+the Game model, I added a Moves property. The Moves property tracks the moves and winning/losing
+move in a list for easy access. I found it a bit of a challenge to decide how words
+could be stored and scrambled in the datastore, as well as how move tracking could be 
+achieved. 
