@@ -9,7 +9,7 @@
 In Unscramble users receive a scrambled word with a specified number of 
 attempts to guess the original word. 
 
-1. Create user at create_user endpoint
+1. Create user at create_user endpoint (requires auth) 
 2. Create new game at new_game endpoint
 3. Use urlsafe_game_key to view created game and scrambled word at get_game endpoint
 4. Use urlsafe_game_key to make a move at make_move endpoint untill win or loss reply.
