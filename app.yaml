@@ -9,6 +9,7 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
+  # routes requests to our API to our endpoints code
 - url: /_ah/spi/.*
   script: api.api
 
