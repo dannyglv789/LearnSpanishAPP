@@ -21,13 +21,17 @@ from models import StringMessage, NewGameForm, GameForm, MakeMoveForm,\
 from utils import get_by_urlsafe
 
 NEW_GAME_REQUEST = endpoints.ResourceContainer(NewGameForm)
+
 GET_GAME_REQUEST = endpoints.ResourceContainer(
         urlsafe_game_key=messages.StringField(1),)
+
 MAKE_MOVE_REQUEST = endpoints.ResourceContainer(
     MakeMoveForm,
     urlsafe_game_key=messages.StringField(1),)
+
 USER_REQUEST = endpoints.ResourceContainer(user_name=messages.StringField(1),
                                            email=messages.StringField(2))
+
 NEW_WORD = endpoints.ResourceContainer(word = messages.StringField(1, required=True))
 
 MEMCACHE_MOVES_REMAINING = 'MOVES_REMAINING'
@@ -37,6 +41,7 @@ def getUserId(user, id_type="email"):
     if id_type == "email":
         return user.email()
 
+# define our api name and verison
 @endpoints.api(name='unscramble', version='v1')
 class GuessANumberApi(remote.Service):
     """Game API"""
