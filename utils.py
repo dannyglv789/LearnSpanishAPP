@@ -18,6 +18,7 @@ def get_by_urlsafe(urlsafe, model):
     Raises:
         ValueError:"""
     try:
+        # get the entity's key 
         key = ndb.Key(urlsafe=urlsafe)
     except TypeError:
         raise endpoints.BadRequestException('Invalid Key')
@@ -27,6 +28,7 @@ def get_by_urlsafe(urlsafe, model):
         else:
             raise
 
+    # get the entity itself, via its key
     entity = key.get()
     if not entity:
         return None
