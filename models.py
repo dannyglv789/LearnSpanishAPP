@@ -1,12 +1,15 @@
-"""models.py - This file contains the class definitions for the Datastore
-entities used by the Game. Because these classes are also regular Python
-classes they can include methods (such as 'to_form' and 'new_game')."""
-
 import random
 from datetime import date
 from protorpc import messages
 from google.appengine.ext import ndb
 import endpoints
+
+
+"""models.py - This file contains the class definitions for the Datastore
+entities used by the Game. Because these classes are also regular Python
+classes they can include methods (such as 'to_form' and 'new_game').
+every entity is given a datastore key
+"""
 
 #helper function for getting user
 def getUserId(user, id_type="email"):
@@ -36,19 +39,20 @@ class Game(ndb.Model):
     @classmethod
     def new_game(cls, user, attempts):
         """Creates and returns a new game"""
+
+        # we query the word table and append all the words to a list
         q = HangManWords.query()
         words = []
         for x in q:
             words.append(x.word)
-#        if max < min:
-#            raise ValueError('Maximum must be greater than minimum')
-# key
+
         g_user = endpoints.get_current_user()
         user_id = getUserId(g_user)
         u_key = ndb.Key(User, user_id)
         game_id = Game.allocate_ids(size=1, parent=u_key)[0]
         game_key = ndb.Key(Game, game_id, parent=u_key)
-        
+
+        #from the words list we randomly select a target word
         game = Game(user=user,
                     target=random.choice(words),
                     attempts_allowed=attempts,

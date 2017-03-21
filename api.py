@@ -20,6 +20,10 @@ from models import StringMessage, NewGameForm, GameForm, MakeMoveForm,\
     ScoreForms, RankingForm, HistoryForm, HistoryForms
 from utils import get_by_urlsafe
 
+
+# If the request contains path or querystring arguments,
+# you cannot use a simple Message class as described under Create the API.
+# Instead, you must use a ResourceContainer class"
 NEW_GAME_REQUEST = endpoints.ResourceContainer(NewGameForm)
 
 GET_GAME_REQUEST = endpoints.ResourceContainer(
@@ -125,11 +129,14 @@ class GuessANumberApi(remote.Service):
         """Makes a move. Returns a game state with message"""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
         target = game.target
-            
+        
+        # we check if the game has alrady been played and is over    
         if game.game_over:
             return game.to_form('Game already over!')
 
         game.attempts_remaining -= 1
+
+        # check if guess is correct
         if request.guess == game.target:
             # add win to profile
             user = endpoints.get_current_user()
@@ -146,7 +153,8 @@ class GuessANumberApi(remote.Service):
             
             game.end_game(True)
             return game.to_form('You win!')
-        
+
+        # guess is incorrect
         if request.guess != game.target:
             msg = 'sorry try again!'
             game.moves.append(msg)
