@@ -118,7 +118,7 @@ class NewGameForm(messages.Message):
     user_name = messages.StringField(1, required=True)
 #    min = messages.IntegerField(2, default=1)
 #    max = messages.IntegerField(3, default=10)
-    attempts = messages.IntegerField(4, default=5)
+    attempts = messages.IntegerField(2, default=5)
 
 
 class MakeMoveForm(messages.Message):
@@ -139,7 +139,7 @@ class ScoreForms(messages.Message):
 
 
 class StringMessage(messages.Message):
-    """StringMessage-- outbound (single) string message"""
+    """response of a single string message"""
     message = messages.StringField(1, required=True)
 
 class StringMessages(messages.Message):

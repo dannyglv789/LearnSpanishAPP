@@ -33,6 +33,7 @@ MAKE_MOVE_REQUEST = endpoints.ResourceContainer(
     MakeMoveForm,
     urlsafe_game_key=messages.StringField(1),)
 
+# this resource container provides user_name and email
 USER_REQUEST = endpoints.ResourceContainer(user_name=messages.StringField(1),
                                            email=messages.StringField(2))
 
@@ -83,24 +84,36 @@ class GuessANumberApi(remote.Service):
         taskqueue.add(url='/tasks/cache_average_attempts')
         return game.to_form('Good luck Unscrambling your word!')
     
+    # endpoint for creating a new user
     @endpoints.method(request_message=USER_REQUEST,
                       response_message=StringMessage,
                       path='user',
                       name='create_user',
                       http_method='POST')
     def create_user(self, request):
-        """Create a User. Requires a unique username"""
+        """ create a new user """
+
+        # check if a user already exists
         if User.query(User.name == request.user_name).get():
             raise endpoints.ConflictException(
                     'A User with that name already exists!')
+
+        # endpoints.get_current_user() returns a User, otherwise it returns None.
         g_user = endpoints.get_current_user()
         if not g_user:
             raise endpoints.UnauthorizedException('Authorization required')
+
+        # get email from user
         user_id = getUserId(g_user)
+
+        # create ndb key of kind User from user email
         u_key = ndb.Key(User, user_id)
-        
+
+        # store user in db
         user = User(name=request.user_name, email=request.email, key=u_key)
         user.put()
+
+        # returns a response message confirming user was created
         return StringMessage(message='User {} created!'.format(
                 request.user_name))
 
