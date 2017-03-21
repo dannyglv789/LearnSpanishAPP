@@ -10,7 +10,7 @@ entities used by the Game. Because these classes are also regular Python
 classes they can include methods (such as 'to_form' and 'new_game').
 every entity is given a datastore key
 """
-
+new_words = ['dog','cat','bird']
 #helper function for getting user
 def getUserId(user, id_type="email"):
     if id_type == "email":
@@ -41,10 +41,10 @@ class Game(ndb.Model):
         """Creates and returns a new game"""
 
         # we query the word table and append all the words to a list
-        q = HangManWords.query()
-        words = []
-        for x in q:
-            words.append(x.word)
+#        q = HangManWords.query()
+#        words = []
+#        for x in q:
+#            words.append(x.word)
 
         g_user = endpoints.get_current_user()
         user_id = getUserId(g_user)
@@ -54,7 +54,7 @@ class Game(ndb.Model):
 
         #from the words list we randomly select a target word
         game = Game(user=user,
-                    target=random.choice(words),
+                    target=random.choice(new_words),
                     attempts_allowed=attempts,
                     attempts_remaining=attempts,
                     game_over=False,
