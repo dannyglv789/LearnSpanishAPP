@@ -29,6 +29,7 @@ NEW_GAME_REQUEST = endpoints.ResourceContainer(NewGameForm)
 GET_GAME_REQUEST = endpoints.ResourceContainer(
         urlsafe_game_key=messages.StringField(1),)
 
+# resource containter using makemoveform. Used when user makes a guess
 MAKE_MOVE_REQUEST = endpoints.ResourceContainer(
     MakeMoveForm,
     urlsafe_game_key=messages.StringField(1),)
@@ -139,8 +140,19 @@ class GuessANumberApi(remote.Service):
                       name='make_move',
                       http_method='PUT')
     def make_move(self, request):
-        """Makes a move. Returns a game state with message"""
+        """Makes a move. User sends a request containing a guess.
+           The game is retrieved from datastore by the urlsafe_game_key
+           provided in the request.
+           In each request an attempt remaining is subtracted.
+           If the guess is correct, a win is added to the users profile
+           and a win message is returnd as a response.
+           All moves are appended to the game's move list defined in the model
+        """
+
+        # we retrieve the game with the urlsafe key
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
+
+        # this is the target word the user is trying to guess
         target = game.target
         
         # we check if the game has alrady been played and is over    
@@ -162,8 +174,8 @@ class GuessANumberApi(remote.Service):
             msg = 'You win'
             game.moves.append(msg)
             prof.put()
-            
-            
+
+            # return win response
             game.end_game(True)
             return game.to_form('You win!')
 
