@@ -45,7 +45,6 @@ class GuessANumberApi(remote.Service):
         if not user:
             raise endpoints.NotFoundException(
                     'A User with that name does not exist!')
-        q = HangManWords.query()
         try:
             # user exists and new game entity is added to datastore
             game = Game.new_game(user.key,request.attempts)
@@ -100,9 +99,8 @@ class GuessANumberApi(remote.Service):
     def get_game(self, request):
         """Return your word and current game state."""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
-        s = game.target
-        scrambled = ''.join(random.sample(s,len(s)))
-        response = 'this game is active. your scrambled word is: ' + scrambled
+        target = game.target
+        response = 'How do you say ' + target +  ' in spanish?'
         if game:
             return StringMessage(message=response)
         else:

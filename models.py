@@ -39,7 +39,6 @@ class Game(ndb.Model):
     @classmethod
     def new_game(cls, user, attempts):
         """Creates a new game from user request"""
-        
         g_user = endpoints.get_current_user()
         user_id = getUserId(g_user)
         u_key = ndb.Key(User, user_id)
