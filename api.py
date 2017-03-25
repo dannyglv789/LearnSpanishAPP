@@ -15,14 +15,9 @@ from models import StringMessage, NewGameForm, GameForm, MakeMoveForm,\
     ScoreForms, RankingForm, HistoryForm, HistoryForms
 from resourcecontainers import NEW_GAME_REQUEST, GET_GAME_REQUEST, \
      MAKE_MOVE_REQUEST, USER_REQUEST, NEW_WORD
-from utils import get_by_urlsafe
+from utils import get_by_urlsafe, getUserId
 
 MEMCACHE_MOVES_REMAINING = 'MOVES_REMAINING'
-
-#helper function for getting user
-def getUserId(user, id_type="email"):
-    if id_type == "email":
-        return user.email()
 
 # our api name and verison
 @endpoints.api(name='unscramble', version='v1')

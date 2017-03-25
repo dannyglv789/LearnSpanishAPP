@@ -4,6 +4,11 @@ import logging
 from google.appengine.ext import ndb
 import endpoints
 
+def getUserId(user, id_type="email"):
+    """helper function for getting user"""
+    if id_type == "email":
+        return user.email()
+    
 def get_by_urlsafe(urlsafe, model):
     """Returns an ndb.Model entity that the urlsafe key points to. Checks
         that the type of entity returned is of the correct kind. Raises an
