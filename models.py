@@ -38,21 +38,13 @@ class Game(ndb.Model):
 
     @classmethod
     def new_game(cls, user, attempts):
-        """Creates and returns a new game"""
-
-        # we query the word table and append all the words to a list
-#        q = HangManWords.query()
-#        words = []
-#        for x in q:
-#            words.append(x.word)
-
+        """Creates a new game from user request"""
+        
         g_user = endpoints.get_current_user()
         user_id = getUserId(g_user)
         u_key = ndb.Key(User, user_id)
         game_id = Game.allocate_ids(size=1, parent=u_key)[0]
         game_key = ndb.Key(Game, game_id, parent=u_key)
-
-        #from the words list we randomly select a target word
         game = Game(user=user,
                     target=random.choice(new_words),
                     attempts_allowed=attempts,

@@ -1,44 +1,21 @@
 # -*- coding: utf-8 -*-`
 """api.py - Create and configure the Game API exposing the resources.
-This can also contain game logic. For more complex games it would be wise to
-move game logic to another file. Ideally the API will be simple, concerned
-primarily with communication to/from the API's users."""
-
+This can also contain game logic. """
 
 import logging
 import endpoints
 import random
 from protorpc import remote, messages
 from protorpc import message_types
-
 from google.appengine.api import memcache
 from google.appengine.api import taskqueue
 from google.appengine.ext import ndb
-
 from models import User, Game, Score, HangManWords, StringMessages, RankingForms
 from models import StringMessage, NewGameForm, GameForm, MakeMoveForm,\
     ScoreForms, RankingForm, HistoryForm, HistoryForms
+from resourcecontainers import NEW_GAME_REQUEST, GET_GAME_REQUEST, \
+     MAKE_MOVE_REQUEST, USER_REQUEST, NEW_WORD
 from utils import get_by_urlsafe
-
-
-# If the request contains path or querystring arguments,
-# you cannot use a simple Message class as described under Create the API.
-# Instead, you must use a ResourceContainer class"
-NEW_GAME_REQUEST = endpoints.ResourceContainer(NewGameForm)
-
-GET_GAME_REQUEST = endpoints.ResourceContainer(
-        urlsafe_game_key=messages.StringField(1),)
-
-# resource containter using makemoveform. Used when user makes a guess
-MAKE_MOVE_REQUEST = endpoints.ResourceContainer(
-    MakeMoveForm,
-    urlsafe_game_key=messages.StringField(1),)
-
-# this resource container provides user_name and email
-USER_REQUEST = endpoints.ResourceContainer(user_name=messages.StringField(1),
-                                           email=messages.StringField(2))
-
-NEW_WORD = endpoints.ResourceContainer(word = messages.StringField(1, required=True))
 
 MEMCACHE_MOVES_REMAINING = 'MOVES_REMAINING'
 
@@ -47,7 +24,7 @@ def getUserId(user, id_type="email"):
     if id_type == "email":
         return user.email()
 
-# define our api name and verison
+# our api name and verison
 @endpoints.api(name='unscramble', version='v1')
 class GuessANumberApi(remote.Service):
     """Game API"""
@@ -67,13 +44,15 @@ class GuessANumberApi(remote.Service):
                       name='new_game',
                       http_method='POST')
     def new_game(self, request):
-        """Creates new Unscramble game"""
+        """Creates new game."""
+        # check that a user exists before creating a game by querying datastore
         user = User.query(User.name == request.user_name).get()
         if not user:
             raise endpoints.NotFoundException(
                     'A User with that name does not exist!')
         q = HangManWords.query()
         try:
+            # user exists and new game entity is added to datastore
             game = Game.new_game(user.key,request.attempts)
         except ValueError:
             raise endpoints.BadRequestException('Maximum must be greater '
