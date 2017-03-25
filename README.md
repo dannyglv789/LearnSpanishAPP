@@ -6,8 +6,8 @@
  
  
 ##Game Description:
-In Unscramble users receive a scrambled word with a specified number of 
-attempts to guess the original word. 
+In Learn Spanish users receive a spanish word with a specified number of 
+attempts to guess the english translation. 
 
 1. Create user at create_user endpoint (requires auth) 
 2. Create new game at new_game endpoint
