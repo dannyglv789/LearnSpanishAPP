@@ -1,4 +1,4 @@
-#Full Stack Nanodegree Project 4 
+#Spanish Word Guessing Game 
 
 ## Set-Up Instructions:
 1. The API can be accessed at https://gameapp-1266.appspot.com/_ah/api/explorer
