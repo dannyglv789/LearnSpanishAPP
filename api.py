@@ -10,7 +10,7 @@ from protorpc import message_types
 from google.appengine.api import memcache
 from google.appengine.api import taskqueue
 from google.appengine.ext import ndb
-from models import User, Game, Score, HangManWords, StringMessages, RankingForms
+from models import User, Game, Score, GameWords, StringMessages, RankingForms
 from models import StringMessage, NewGameForm, GameForm, MakeMoveForm,\
     ScoreForms, RankingForm, HistoryForm, HistoryForms
 from resourcecontainers import NEW_GAME_REQUEST, GET_GAME_REQUEST, \
@@ -24,20 +24,19 @@ MEMCACHE_MOVES_REMAINING = 'MOVES_REMAINING'
 class GuessANumberApi(remote.Service):
     """Game API"""
     @endpoints.method(NEW_WORD,StringMessage,
-                      name='AddUnscrambleWord',
+                      name='AddNewWord',
                       http_method='POST')
     def add_word(self,request):
-        """ Add word to list of possible words for a unscramble game """
-        s = request.word
-        scrambled = ''.join(random.sample(s,len(s)))
-        data = HangManWords(word=request.word,scrambled_word=scrambled)
-        data.put()
-        return StringMessage(message=data.key.urlsafe())
+        """Add a new word entity to datastore"""
+        new_word = GameWords(word=request.word, spanish_translation=request.spanish_translation)
+        new_word.put()
+        return StringMessage(message=new_word.key.urlsafe())
 
     @endpoints.method(request_message=NEW_GAME_REQUEST,
                       response_message=GameForm,
                       name='new_game',
                       http_method='POST')
+    
     def new_game(self, request):
         """Creates new game."""
         # check that a user exists before creating a game by querying datastore
@@ -97,7 +96,7 @@ class GuessANumberApi(remote.Service):
                       name='get_game',
                       http_method='GET')
     def get_game(self, request):
-        """Return your word and current game state."""
+        """Returns the word user has to guess the spanish translation of"""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
         target = game.target
         response = 'How do you say ' + target +  ' in spanish?'

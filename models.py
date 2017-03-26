@@ -3,22 +3,22 @@ from datetime import date
 from protorpc import messages
 from google.appengine.ext import ndb
 import endpoints
-
+from listofwords import new_words
 
 """models.py - This file contains the class definitions for the Datastore
 entities used by the Game. Because these classes are also regular Python
 classes they can include methods (such as 'to_form' and 'new_game').
 every entity is given a datastore key
 """
-new_words = ['dog','cat','bird']
 #helper function for getting user
 def getUserId(user, id_type="email"):
     if id_type == "email":
         return user.email()
-class HangManWords(ndb.Model):
-    """  Words for hangman """
+    
+class GameWords(ndb.Model):
+    """  Words for hangman"""
     word = ndb.StringProperty(required=True)
-    scrambled_word = ndb.StringProperty(required=True)
+    spanish_translation = ndb.StringProperty(required=True)
 
 class User(ndb.Model):
     """User profile"""
@@ -39,13 +39,19 @@ class Game(ndb.Model):
     @classmethod
     def new_game(cls, user, attempts):
         """Creates a new game from user request"""
+
+        # query the gamewords for keys then retrieve word entity from random key
+        q = GameWords.query().fetch(keys_only=True)
+        entity_key = random.choice(q)
+        word_entity = entity_key.get()
+            
         g_user = endpoints.get_current_user()
         user_id = getUserId(g_user)
         u_key = ndb.Key(User, user_id)
         game_id = Game.allocate_ids(size=1, parent=u_key)[0]
         game_key = ndb.Key(Game, game_id, parent=u_key)
         game = Game(user=user,
-                    target=random.choice(new_words),
+                    target = word_entity.word,
                     attempts_allowed=attempts,
                     attempts_remaining=attempts,
                     game_over=False,
