@@ -9,11 +9,11 @@
 In Learn Spanish users receive a spanish word with a specified number of 
 attempts to guess the english translation. 
 
-1. Create user at create_user endpoint (requires auth) 
+1. Create user at create_user endpoint  
 2. Create new game at new_game endpoint
-3. Use urlsafe_game_key to view created game and scrambled word at get_game endpoint
-4. Use urlsafe_game_key to make a move at make_move endpoint untill win or loss reply.
-5. Each game can be retrieved or played at get_user_games endpoint
+3. Use urlsafe_game_key to view created game at get_game endpoint
+4. Use urlsafe_game_key to make a move at make_move endpoint untill win or loss.
+5. games can be retrieved at get_user_games endpoint
 
 ##Files Included:
  - api.py: Contains endpoints and game playing logic.
@@ -23,12 +23,12 @@ attempts to guess the english translation.
  - models.py: Entity and message definitions including helper methods.
  - utils.py: Helper function for retrieving ndb.Models by urlsafe Key string.
  
-##Endpoints Added: 
- - **add_unscramble_word**
+##Endpoints: 
+ - **addNewWord**
     - Method: POST
-    - Parameters: word
-    - Returns: key of word created
-    - Description: creates word for future games to scramble
+    - Parameters: word, spanish_translation
+    - Returns: key of entity created
+    - Description: creates word entity for games
 	
  - **get_user_games**
     - Method: GET
