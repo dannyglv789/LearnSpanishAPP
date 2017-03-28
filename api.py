@@ -20,7 +20,7 @@ from utils import get_by_urlsafe, getUserId
 MEMCACHE_MOVES_REMAINING = 'MOVES_REMAINING'
 
 # our api name and verison
-@endpoints.api(name='unscramble', version='v1')
+@endpoints.api(name='learnspanish', version='v1')
 class GuessANumberApi(remote.Service):
     """Game API"""
     @endpoints.method(NEW_WORD,StringMessage,
