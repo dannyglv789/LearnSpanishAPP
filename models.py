@@ -3,7 +3,7 @@ from datetime import date
 from protorpc import messages
 from google.appengine.ext import ndb
 import endpoints
-from listofwords import new_words
+from listofwords import new_words, english_spanish_words
 
 """models.py - This file contains the class definitions for the Datastore
 entities used by the Game. Because these classes are also regular Python
@@ -19,6 +19,17 @@ class GameWords(ndb.Model):
     """  Words for hangman"""
     word = ndb.StringProperty(required=True)
     spanish_translation = ndb.StringProperty(required=True)
+
+    @classmethod
+    def add_words_from_list(cls):
+        english_words = english_spanish_words[::2]
+        spanish_words = english_spanish_words[1::2]
+        pairs = zip(english_words, spanish_words)
+        for i in pairs:
+            new_word = GameWords(word=i[0],spanish_translation=i[1])
+            new_word.put()
+        return "words added to datastore"
+    
 
 class User(ndb.Model):
     """User profile"""

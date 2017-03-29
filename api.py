@@ -23,14 +23,16 @@ MEMCACHE_MOVES_REMAINING = 'MOVES_REMAINING'
 @endpoints.api(name='learnspanish', version='v1')
 class GuessANumberApi(remote.Service):
     """Game API"""
-    @endpoints.method(NEW_WORD,StringMessage,
+    @endpoints.method(message_types.VoidMessage,StringMessage,
                       name='AddNewWord',
                       http_method='POST')
     def add_word(self,request):
         """Add a new word entity to datastore"""
-        new_word = GameWords(word=request.word, spanish_translation=request.spanish_translation)
-        new_word.put()
-        return StringMessage(message=new_word.key.urlsafe())
+        GameWords.add_words_from_list()
+#        new_word = GameWords(word=request.word, spanish_translation=request.spanish_translation)
+#        new_word.put()
+
+        return StringMessage(message="words added")
 
     @endpoints.method(request_message=NEW_GAME_REQUEST,
                       response_message=GameForm,
