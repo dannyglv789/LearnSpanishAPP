@@ -27,11 +27,8 @@ class GuessANumberApi(remote.Service):
                       name='AddNewWord',
                       http_method='POST')
     def add_word(self,request):
-        """Add a new word entity to datastore"""
+        """Add list of words to datastore"""
         GameWords.add_words_from_list()
-#        new_word = GameWords(word=request.word, spanish_translation=request.spanish_translation)
-#        new_word.put()
-
         return StringMessage(message="words added")
 
     @endpoints.method(request_message=NEW_GAME_REQUEST,
@@ -57,7 +54,7 @@ class GuessANumberApi(remote.Service):
         # This operation is not needed to complete the creation of a new game
         # so it is performed out of sequence.
         taskqueue.add(url='/tasks/cache_average_attempts')
-        return game.to_form('Good luck Unscrambling your word!')
+        return game.to_form('Good luck!')
     
     # endpoint for creating a new user
     @endpoints.method(request_message=USER_REQUEST,

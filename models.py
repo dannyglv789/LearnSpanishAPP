@@ -41,6 +41,8 @@ class User(ndb.Model):
 class Game(ndb.Model):
     """Game object"""
     target = ndb.StringProperty(required=True)
+    incorrect_1 = ndb.StringProperty(required=True)
+    incorrect_2 = ndb.StringProperty(required=True)
     attempts_allowed = ndb.IntegerProperty(required=True)
     attempts_remaining = ndb.IntegerProperty(required=True, default=5)
     game_over = ndb.BooleanProperty(required=True, default=False)
@@ -55,7 +57,8 @@ class Game(ndb.Model):
         q = GameWords.query().fetch(keys_only=True)
         entity_key = random.choice(q)
         word_entity = entity_key.get()
-            
+
+        spanish_words = english_spanish_words[1::2]
         g_user = endpoints.get_current_user()
         user_id = getUserId(g_user)
         u_key = ndb.Key(User, user_id)
@@ -63,6 +66,8 @@ class Game(ndb.Model):
         game_key = ndb.Key(Game, game_id, parent=u_key)
         game = Game(user=user,
                     target = word_entity.word,
+                    incorrect_1 = random.choice(spanish_words),
+                    incorrect_2 = random.choice(spanish_words),
                     attempts_allowed=attempts,
                     attempts_remaining=attempts,
                     game_over=False,
