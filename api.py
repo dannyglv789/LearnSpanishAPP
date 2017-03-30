@@ -90,7 +90,7 @@ class GuessANumberApi(remote.Service):
                 request.user_name))
 
     @endpoints.method(request_message=GET_GAME_REQUEST,
-                      response_message=StringMessage,
+                      response_message=GameForm,
                       path='game/{urlsafe_game_key}',
                       name='get_game',
                       http_method='GET')
@@ -100,7 +100,12 @@ class GuessANumberApi(remote.Service):
         target = game.target
         response = 'How do you say ' + target +  ' in spanish?'
         if game:
-            return StringMessage(message=response)
+            return GameForm(message=response,
+                            incorrect_1=game.incorrect_1,
+                            incorrect_2=game.incorrect_2,
+                            correct=game.correct,
+                            game_over=game.game_over,
+                            )
         else:
             raise endpoints.NotFoundException('Game not found!')
 

@@ -43,6 +43,7 @@ class Game(ndb.Model):
     target = ndb.StringProperty(required=True)
     incorrect_1 = ndb.StringProperty(required=True)
     incorrect_2 = ndb.StringProperty(required=True)
+    correct = ndb.StringProperty(required=True)
     attempts_allowed = ndb.IntegerProperty(required=True)
     attempts_remaining = ndb.IntegerProperty(required=True, default=5)
     game_over = ndb.BooleanProperty(required=True, default=False)
@@ -68,6 +69,7 @@ class Game(ndb.Model):
                     target = word_entity.word,
                     incorrect_1 = random.choice(spanish_words),
                     incorrect_2 = random.choice(spanish_words),
+                    correct = word_entity.spanish_translation,
                     attempts_allowed=attempts,
                     attempts_remaining=attempts,
                     game_over=False,
@@ -111,21 +113,12 @@ class Score(ndb.Model):
 
 class GameForm(messages.Message):
     """GameForm for outbound game state information"""
-    urlsafe_key = messages.StringField(1, required=True)
-    attempts_remaining = messages.IntegerField(2, required=True)
-    game_over = messages.BooleanField(3, required=True)
-    message = messages.StringField(4, required=True)
-    user_name = messages.StringField(5, required=True)
+    message = messages.StringField(1, required=True)
+    incorrect_1 = messages.StringField(2, required=True)
+    incorrect_2 = messages.StringField(3, required=True)
+    correct = messages.StringField(4, required=True)
+    game_over = messages.BooleanField(5, required=True)
     
-class GameForm(messages.Message):
-    """GameForm for outbound game state information"""
-    urlsafe_key = messages.StringField(1, required=True)
-    attempts_remaining = messages.IntegerField(2, required=True)
-    game_over = messages.BooleanField(3, required=True)
-    message = messages.StringField(4, required=True)
-    user_name = messages.StringField(5, required=True)
-
-
 class NewGameForm(messages.Message):
     """Used to create a new game"""
     user_name = messages.StringField(1, required=True)
