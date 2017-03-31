@@ -45,7 +45,7 @@ class GuessANumberApi(remote.Service):
                     'A User with that name does not exist!')
         try:
             # user exists and new game entity is added to datastore
-            game = Game.new_game(user.key,request.attempts)
+            game = Game.new_game(user.key)
         except ValueError:
             raise endpoints.BadRequestException('Maximum must be greater '
                                                 'than minimum!')
@@ -53,7 +53,7 @@ class GuessANumberApi(remote.Service):
         # Use a task queue to update the average attempts remaining.
         # This operation is not needed to complete the creation of a new game
         # so it is performed out of sequence.
-        taskqueue.add(url='/tasks/cache_average_attempts')
+        # taskqueue.add(url='/tasks/cache_average_attempts')
         return game.to_form('Good luck!')
     
     # endpoint for creating a new user
@@ -101,10 +101,11 @@ class GuessANumberApi(remote.Service):
         response = 'How do you say ' + target +  ' in spanish?'
         if game:
             return GameForm(message=response,
-                            incorrect_1=game.incorrect_1,
-                            incorrect_2=game.incorrect_2,
-                            correct=game.correct,
-                            game_over=game.game_over,
+                            urlsafe_key= game.key.urlsafe()
+                            #incorrect_1=game.incorrect_1,
+                            #incorrect_2=game.incorrect_2,
+                            #correct=game.correct,
+                            #game_over=game.game_over,
                             )
         else:
             raise endpoints.NotFoundException('Game not found!')

@@ -10,8 +10,7 @@ from models import StringMessage, NewGameForm, GameForm, MakeMoveForm,\
 # you cannot use a simple Message class as described under Create the API.
 # Instead, you must use a ResourceContainer class"
 
-NEW_GAME_REQUEST = endpoints.ResourceContainer(user_name = messages.StringField(1, required=True),
-                                               attempts = messages.IntegerField(2, default=5))
+NEW_GAME_REQUEST = endpoints.ResourceContainer(user_name = messages.StringField(1, required=True))
 GET_GAME_REQUEST = endpoints.ResourceContainer(urlsafe_game_key=messages.StringField(1),)
 MAKE_MOVE_REQUEST = endpoints.ResourceContainer(MakeMoveForm,
                                                 urlsafe_game_key=messages.StringField(1),)

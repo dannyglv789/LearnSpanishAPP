@@ -38,20 +38,38 @@ class User(ndb.Model):
     receives_updates = ndb.BooleanProperty(default=False)
     wins = ndb.IntegerProperty(default=0)
 
+class Round(ndb.Model):
+    target = ndb.StringProperty(required=True)
+    incorrect_1 = ndb.StringProperty(required=True)
+    incorrect_2 = ndb.StringProperty(required=True)
+    correct = ndb.StringProperty(required=True)
+    
+    def new_round(cls):
+        # query the gamewords for keys then retrieve word entity from random key
+        q = GameWords.query().fetch(keys_only=True)
+        entity_key = random.choice(q)
+        word_entity = entity_key.get()
+        spanish_words = english_spanish_words[1::2]
+        new_round = Round(target=word_entity.word,
+                          incorrect_1 = random.choice(spanish_words),
+                          incorrect_2 = random.choice(spanish_words),
+                          correct = word_entity.spanish_translation
+                          )
+        rew_round.put()
+        return new_round
+    
 class Game(ndb.Model):
     """Game object"""
     target = ndb.StringProperty(required=True)
     incorrect_1 = ndb.StringProperty(required=True)
     incorrect_2 = ndb.StringProperty(required=True)
     correct = ndb.StringProperty(required=True)
-    attempts_allowed = ndb.IntegerProperty(required=True)
-    attempts_remaining = ndb.IntegerProperty(required=True, default=5)
     game_over = ndb.BooleanProperty(required=True, default=False)
     user = ndb.KeyProperty(required=True, kind='User')
     moves = ndb.StringProperty(repeated=True)
 
     @classmethod
-    def new_game(cls, user, attempts):
+    def new_game(cls, user):
         """Creates a new game from user request"""
 
         # query the gamewords for keys then retrieve word entity from random key
@@ -70,8 +88,6 @@ class Game(ndb.Model):
                     incorrect_1 = random.choice(spanish_words),
                     incorrect_2 = random.choice(spanish_words),
                     correct = word_entity.spanish_translation,
-                    attempts_allowed=attempts,
-                    attempts_remaining=attempts,
                     game_over=False,
                     key = game_key)
         game.put()
@@ -81,9 +97,7 @@ class Game(ndb.Model):
         """Returns a GameForm representation of the Game"""
         form = GameForm()
         form.urlsafe_key = self.key.urlsafe()
-        form.user_name = self.user.get().name
-        form.attempts_remaining = self.attempts_remaining
-        form.game_over = self.game_over
+#        form.game_over = self.game_over
         form.message = message
         return form
 
@@ -113,18 +127,13 @@ class Score(ndb.Model):
 
 class GameForm(messages.Message):
     """GameForm for outbound game state information"""
-    message = messages.StringField(1, required=True)
-    incorrect_1 = messages.StringField(2, required=True)
-    incorrect_2 = messages.StringField(3, required=True)
-    correct = messages.StringField(4, required=True)
-    game_over = messages.BooleanField(5, required=True)
+    urlsafe_key = messages.StringField(1, required=True)
+    message = messages.StringField(2, required=True)
+#    game_over = messages.BooleanField(6, required=True)
     
 class NewGameForm(messages.Message):
     """Used to create a new game"""
     user_name = messages.StringField(1, required=True)
-#    min = messages.IntegerField(2, default=1)
-#    max = messages.IntegerField(3, default=10)
-    attempts = messages.IntegerField(2, default=5)
 
 
 class MakeMoveForm(messages.Message):
