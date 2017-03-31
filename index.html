@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js"></script>
+	<link data-require="bootstrap@*" data-semver="4.0.5" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" />
+    <script data-require="bootstrap@*" data-semver="4.0.5" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js"></script>
+	<style>
+	.blue_circle {
+		background: linear-gradient(#e2e2e2 ,  #fefefe );
+		border-radius: 50%;
+		width: 100px;
+		height: 100px; 
+		/* width and height can be anything, as long as they're equal */
+	}
+	
+	.red_circle {
+		background: linear-gradient(#e2e2e2 ,  #fefefe );
+		border-radius: 50%;
+		width: 100px;
+		height: 100px; 
+		/* width and height can be anything, as long as they're equal */
+	}
+	#game_word{
+		text-align: center;
+	}
+	#page_header{
+		text-align: center;
+	}
+	#connect_4_board{
+		margin-left: auto;
+		margin-right: auto;
+	}
+	</style>
+</head>
+<body ng-app = "myapp" class="container">
+	<h1 id="page_header"> Boost your Spanish Skills!</h1>
+	<h3 id="game_word"> How do you say cat in Spanish? </h3>
+	<div id="game_board" class="text-center">
+	<table id="connect_4_board">
+		<tr>
+			<td class="blue_circle"></td><td class="red_circle"></td><td class="blue_circle"></td><td class="red_circle"></td>
+		</tr>
+		<tr>
+			<td class="red_circle"></td><td class="blue_circle"></td><td class="red_circle"></td><td class="blue_circle"></td>
+		</tr>
+		<tr>
+			<td class="blue_circle"></td><td class="red_circle"></td><td class="blue_circle"></td><td class="red_circle"></td>
+		</tr>
+		<tr>
+			<td class="red_circle"></td><td class="blue_circle"></td><td class="red_circle"></td><td class="blue_circle"></td>
+		</tr>
+	</table>
+	<div class="btn-group btn-group-justified" role="group" aria-label="">
+		<div class="btn-group" role="group">
+    <button type="button" class="btn btn-default">Left</button>
+  </div>
+  <div class="btn-group" role="group">
+    <button type="button" class="btn btn-default">Middle</button>
+  </div>
+  <div class="btn-group" role="group">
+    <button type="button" class="btn btn-default">Right</button>
+  </div>
+	</div>
+	</div>
+</body>
+</html>
