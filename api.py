@@ -97,15 +97,9 @@ class GuessANumberApi(remote.Service):
     def get_game(self, request):
         """Returns the word user has to guess the spanish translation of"""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
-        target = game.target
-        response = 'How do you say ' + target +  ' in spanish?'
         if game:
-            return GameForm(message=response,
+            return GameForm(game_over=game.game_over,
                             urlsafe_key= game.key.urlsafe()
-                            #incorrect_1=game.incorrect_1,
-                            #incorrect_2=game.incorrect_2,
-                            #correct=game.correct,
-                            #game_over=game.game_over,
                             )
         else:
             raise endpoints.NotFoundException('Game not found!')

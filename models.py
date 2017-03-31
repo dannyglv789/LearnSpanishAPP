@@ -60,10 +60,6 @@ class Round(ndb.Model):
     
 class Game(ndb.Model):
     """Game object"""
-    target = ndb.StringProperty(required=True)
-    incorrect_1 = ndb.StringProperty(required=True)
-    incorrect_2 = ndb.StringProperty(required=True)
-    correct = ndb.StringProperty(required=True)
     game_over = ndb.BooleanProperty(required=True, default=False)
     user = ndb.KeyProperty(required=True, kind='User')
     moves = ndb.StringProperty(repeated=True)
@@ -71,25 +67,16 @@ class Game(ndb.Model):
     @classmethod
     def new_game(cls, user):
         """Creates a new game from user request"""
-
-        # query the gamewords for keys then retrieve word entity from random key
-        q = GameWords.query().fetch(keys_only=True)
-        entity_key = random.choice(q)
-        word_entity = entity_key.get()
-
-        spanish_words = english_spanish_words[1::2]
         g_user = endpoints.get_current_user()
         user_id = getUserId(g_user)
         u_key = ndb.Key(User, user_id)
         game_id = Game.allocate_ids(size=1, parent=u_key)[0]
         game_key = ndb.Key(Game, game_id, parent=u_key)
-        game = Game(user=user,
-                    target = word_entity.word,
-                    incorrect_1 = random.choice(spanish_words),
-                    incorrect_2 = random.choice(spanish_words),
-                    correct = word_entity.spanish_translation,
+        game = Game(
+                    user=user,
                     game_over=False,
-                    key = game_key)
+                    key = game_key
+                    )
         game.put()
         return game
 
@@ -97,8 +84,7 @@ class Game(ndb.Model):
         """Returns a GameForm representation of the Game"""
         form = GameForm()
         form.urlsafe_key = self.key.urlsafe()
-#        form.game_over = self.game_over
-        form.message = message
+        form.game_over = self.game_over
         return form
 
     def end_game(self, won=False):
@@ -128,8 +114,7 @@ class Score(ndb.Model):
 class GameForm(messages.Message):
     """GameForm for outbound game state information"""
     urlsafe_key = messages.StringField(1, required=True)
-    message = messages.StringField(2, required=True)
-#    game_over = messages.BooleanField(6, required=True)
+    game_over = messages.BooleanField(2, required=True)
     
 class NewGameForm(messages.Message):
     """Used to create a new game"""
