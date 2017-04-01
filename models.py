@@ -38,35 +38,27 @@ class User(ndb.Model):
     receives_updates = ndb.BooleanProperty(default=False)
     wins = ndb.IntegerProperty(default=0)
 
-class Round(ndb.Model):
-    target = ndb.StringProperty(required=True)
-    incorrect_1 = ndb.StringProperty(required=True)
-    incorrect_2 = ndb.StringProperty(required=True)
-    correct = ndb.StringProperty(required=True)
-    
-    def new_round(cls):
-        # query the gamewords for keys then retrieve word entity from random key
-        q = GameWords.query().fetch(keys_only=True)
-        entity_key = random.choice(q)
-        word_entity = entity_key.get()
-        spanish_words = english_spanish_words[1::2]
-        new_round = Round(target=word_entity.word,
-                          incorrect_1 = random.choice(spanish_words),
-                          incorrect_2 = random.choice(spanish_words),
-                          correct = word_entity.spanish_translation
-                          )
-        rew_round.put()
-        return new_round
-    
 class Game(ndb.Model):
     """Game object"""
     game_over = ndb.BooleanProperty(required=True, default=False)
     user = ndb.KeyProperty(required=True, kind='User')
     moves = ndb.StringProperty(repeated=True)
+    target = ndb.StringProperty(required=True)
+    incorrect_1 = ndb.StringProperty(required=True)
+    incorrect_2 = ndb.StringProperty(required=True)
+    correct = ndb.StringProperty(required=True)
+
 
     @classmethod
     def new_game(cls, user):
         """Creates a new game from user request"""
+
+        # query the gamewords for keys then retrieve word entity from random key
+        q = GameWords.query().fetch(keys_only=True)
+        entity_key = random.choice(q)
+        word_entity = entity_key.get()
+        spanish_words = english_spanish_words[1::2]
+        
         g_user = endpoints.get_current_user()
         user_id = getUserId(g_user)
         u_key = ndb.Key(User, user_id)
@@ -75,16 +67,34 @@ class Game(ndb.Model):
         game = Game(
                     user=user,
                     game_over=False,
-                    key = game_key
+                    key = game_key,
+                    target=word_entity.word,
+                    incorrect_1 = random.choice(spanish_words),
+                    incorrect_2 = random.choice(spanish_words),
+                    correct = word_entity.spanish_translation
                     )
         game.put()
         return game
-
+    
+    def new_round(self,current_game):
+        """ switches the target word """
+        # query the gamewords for keys then retrieve word entity from random key
+        q = GameWords.query().fetch(keys_only=True)
+        entity_key = random.choice(q)
+        word_entity = entity_key.get()
+        spanish_words = english_spanish_words[1::2]
+        current_game.target=word_entity.word
+        current_game.incorrect_1 = random.choice(spanish_words)
+        current_game.incorrect_2 = random.choice(spanish_words)
+        current_game.correct = word_entity.spanish_translation
+        current_game.put()
+    
     def to_form(self, message):
         """Returns a GameForm representation of the Game"""
         form = GameForm()
         form.urlsafe_key = self.key.urlsafe()
         form.game_over = self.game_over
+        form.target = self.target
         return form
 
     def end_game(self, won=False):
@@ -115,6 +125,7 @@ class GameForm(messages.Message):
     """GameForm for outbound game state information"""
     urlsafe_key = messages.StringField(1, required=True)
     game_over = messages.BooleanField(2, required=True)
+    target = messages.StringField(3, required=True)
     
 class NewGameForm(messages.Message):
     """Used to create a new game"""

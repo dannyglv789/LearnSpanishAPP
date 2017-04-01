@@ -99,13 +99,14 @@ class GuessANumberApi(remote.Service):
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
         if game:
             return GameForm(game_over=game.game_over,
-                            urlsafe_key= game.key.urlsafe()
+                            urlsafe_key= game.key.urlsafe(),
+                            target=game.target
                             )
         else:
             raise endpoints.NotFoundException('Game not found!')
 
     @endpoints.method(request_message=MAKE_MOVE_REQUEST,
-                      response_message=GameForm,
+                      response_message=StringMessage,
                       path='game/{urlsafe_game_key}',
                       name='make_move',
                       http_method='PUT')
@@ -126,13 +127,19 @@ class GuessANumberApi(remote.Service):
         target = game.target
         
         # we check if the game has alrady been played and is over    
-        if game.game_over:
-            return game.to_form('Game already over!')
-
-        game.attempts_remaining -= 1
+#        if game.game_over:
+#            return game.to_form('Game already over!')
 
         # check if guess is correct
-        if request.guess == game.target:
+#        if request.guess == game.target:
+        game.new_round(game)
+        return StringMessage(message="next")
+#            return GameForm(game_over=game.gameover,
+#                            urlsafe_key=game.key.urlsafe(),
+#                            target=game.target
+#                            )
+
+        """
             # add win to profile
             user = endpoints.get_current_user()
             user_id = getUserId(user)
@@ -160,6 +167,7 @@ class GuessANumberApi(remote.Service):
         else:
             game.put()
             return game.to_form(msg)
+    """
 
     
 
