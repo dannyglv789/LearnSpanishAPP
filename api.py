@@ -92,7 +92,7 @@ class GuessANumberApi(remote.Service):
                       name='get_game',
                       http_method='GET')
     def get_game(self, request):
-        """Returns the word user has to guess the spanish translation of"""
+        """Returns game state"""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
         if game:
             return GameForm(game_over=game.game_over,
@@ -108,33 +108,21 @@ class GuessANumberApi(remote.Service):
                       name='make_move',
                       http_method='PUT')
     def make_move(self, request):
-        """Makes a move. User sends a request containing a guess.
-           The game is retrieved from datastore by the urlsafe_game_key
-           provided in the request.
-           In each request an attempt remaining is subtracted.
-           If the guess is correct, a win is added to the users profile
-           and a win message is returnd as a response.
-           All moves are appended to the game's move list defined in the model
-        """
+        """Makes a move. User sends a request containing a guess."""
 
-        # we retrieve the game with the urlsafe key
+        # retrieve the game with the urlsafe key, then the target
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
-
-        # this is the target word the user is trying to guess
         target = game.target
         
-        # we check if the game has alrady been played and is over    
-#        if game.game_over:
-#            return game.to_form('Game already over!')
+        if game.game_over:
+            return game.to_form('Game already over!')
 
-        # check if guess is correct
-#        if request.guess == game.target:
-        game.new_round(game)
-        return StringMessage(message="next")
-#            return GameForm(game_over=game.gameover,
-#                            urlsafe_key=game.key.urlsafe(),
-#                            target=game.target
-#                            )
+        if request.guess == game.target:
+            game.new_round(game)
+            return StringMessage(message="next")
+        else:
+            game.new_round(game)
+            return StringMessage(message="next")
 
         """
             # add win to profile
