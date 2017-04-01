@@ -38,11 +38,9 @@ class GuessANumberApi(remote.Service):
     
     def new_game(self, request):
         """Creates new game."""
-        # check that a user exists before creating a game by querying datastore
         user = User.query(User.name == request.user_name).get()
         if not user:
-            raise endpoints.NotFoundException(
-                    'A User with that name does not exist!')
+            raise endpoints.NotFoundException('User does not exist!')
         try:
             # user exists and new game entity is added to datastore
             game = Game.new_game(user.key)
@@ -53,7 +51,7 @@ class GuessANumberApi(remote.Service):
         # This operation is not needed to complete the creation of a new game
         # so it is performed out of sequence.
         # taskqueue.add(url='/tasks/cache_average_attempts')
-        return game.to_form('Good luck!')
+        return game.to_form()
     
     # endpoint for creating a new user
     @endpoints.method(request_message=USER_REQUEST,

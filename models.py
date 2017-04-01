@@ -89,7 +89,7 @@ class Game(ndb.Model):
         current_game.correct = word_entity.spanish_translation
         current_game.put()
     
-    def to_form(self, message):
+    def to_form(self):
         """Returns a GameForm representation of the Game"""
         form = GameForm()
         form.urlsafe_key = self.key.urlsafe()
