@@ -47,8 +47,7 @@ class GuessANumberApi(remote.Service):
             # user exists and new game entity is added to datastore
             game = Game.new_game(user.key)
         except ValueError:
-            raise endpoints.BadRequestException('Maximum must be greater '
-                                                'than minimum!')
+            raise endpoints.BadRequestException('bad request')
             
         # Use a task queue to update the average attempts remaining.
         # This operation is not needed to complete the creation of a new game
