@@ -97,7 +97,10 @@ class GuessANumberApi(remote.Service):
         if game:
             return GameForm(game_over=game.game_over,
                             urlsafe_key= game.key.urlsafe(),
-                            target=game.target
+                            target=game.target,
+                            choice_1 = game.option_1,
+                            choice_2 = game.option_2,
+                            choice_3 = game.option_3
                             )
         else:
             raise endpoints.NotFoundException('Game not found!')
@@ -109,7 +112,6 @@ class GuessANumberApi(remote.Service):
                       http_method='PUT')
     def make_move(self, request):
         """Makes a move. User sends a request containing a guess."""
-
         # retrieve the game with the urlsafe key, then the target
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
         target = game.target
@@ -118,9 +120,11 @@ class GuessANumberApi(remote.Service):
             return game.to_form('Game already over!')
 
         if request.guess == game.target:
+            # user makes a connect 4 move
             game.new_round(game)
-            return StringMessage(message="next")
+            return StringMessage(message="correct")
         else:
+            # computer makes a  connect 4 move
             game.new_round(game)
             return StringMessage(message="next")
 

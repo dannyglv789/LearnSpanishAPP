@@ -44,20 +44,30 @@ class Game(ndb.Model):
     user = ndb.KeyProperty(required=True, kind='User')
     moves = ndb.StringProperty(repeated=True)
     target = ndb.StringProperty(required=True)
-    incorrect_1 = ndb.StringProperty(required=True)
-    incorrect_2 = ndb.StringProperty(required=True)
-    correct = ndb.StringProperty(required=True)
+    option_1 = ndb.StringProperty(required=True)
+    option_2 = ndb.StringProperty(required=True)
+    option_3 = ndb.StringProperty(required=True)
+    connect_4_turn = ndb.BooleanProperty(required=True, default=False)
 
 
     @classmethod
     def new_game(cls, user):
         """Creates a new game from user request"""
 
-        # query the gamewords for keys then retrieve word entity from random key
+        # retrieve word entity from random key
         q = GameWords.query().fetch(keys_only=True)
         entity_key = random.choice(q)
         word_entity = entity_key.get()
         spanish_words = english_spanish_words[1::2]
+
+        # assign correct answer and two choices randomly
+        incorrect_1 = random.choice(spanish_words)
+        incorrect_2 = random.choice(spanish_words)
+        correct = word_entity.spanish_translation
+        choices_list = [incorrect_1, incorrect_2, correct]
+        randomized = [random.choice(choices_list),random.choice(choices_list),random.choice(choices_list)]
+        if correct not in randomized:
+            randomized[1] = correct
         
         g_user = endpoints.get_current_user()
         user_id = getUserId(g_user)
@@ -69,9 +79,9 @@ class Game(ndb.Model):
                     game_over=False,
                     key = game_key,
                     target=word_entity.word,
-                    incorrect_1 = random.choice(spanish_words),
-                    incorrect_2 = random.choice(spanish_words),
-                    correct = word_entity.spanish_translation
+                    option_1 = randomized[0],
+                    option_2 = randomized[1],
+                    option_3 = randomized[2]
                     )
         game.put()
         return game
@@ -84,9 +94,9 @@ class Game(ndb.Model):
         word_entity = entity_key.get()
         spanish_words = english_spanish_words[1::2]
         current_game.target=word_entity.word
-        current_game.incorrect_1 = random.choice(spanish_words)
-        current_game.incorrect_2 = random.choice(spanish_words)
-        current_game.correct = word_entity.spanish_translation
+        current_game.option_1 = random.choice(spanish_words)
+        current_game.option_2 = random.choice(spanish_words)
+        current_game.option_3 = word_entity.spanish_translation
         current_game.put()
     
     def to_form(self):
@@ -95,6 +105,9 @@ class Game(ndb.Model):
         form.urlsafe_key = self.key.urlsafe()
         form.game_over = self.game_over
         form.target = self.target
+        form.choice_1 = self.option_1
+        form.choice_2 = self.option_2
+        form.choice_3 = self.option_3
         return form
 
     def end_game(self, won=False):
@@ -126,6 +139,9 @@ class GameForm(messages.Message):
     urlsafe_key = messages.StringField(1, required=True)
     game_over = messages.BooleanField(2, required=True)
     target = messages.StringField(3, required=True)
+    choice_1 = messages.StringField(4, required=True)
+    choice_2 = messages.StringField(5, required=True)
+    choice_3 = messages.StringField(6, required=True)
     
 class NewGameForm(messages.Message):
     """Used to create a new game"""

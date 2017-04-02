@@ -13,12 +13,22 @@ from models import StringMessage, NewGameForm, GameForm, MakeMoveForm,\
 NEW_GAME_REQUEST = endpoints.ResourceContainer(
     user_name = messages.StringField(1, required=True)
 )
-GET_GAME_REQUEST = endpoints.ResourceContainer(urlsafe_game_key=messages.StringField(1),)
+
+GET_GAME_REQUEST = endpoints.ResourceContainer(
+    urlsafe_game_key=messages.StringField(1)
+)
+
 MAKE_MOVE_REQUEST = endpoints.ResourceContainer(
     MakeMoveForm,
     urlsafe_game_key=messages.StringField(1)
 )
-USER_REQUEST = endpoints.ResourceContainer(user_name=messages.StringField(1),
-                                           email=messages.StringField(2))
-NEW_WORD = endpoints.ResourceContainer(word = messages.StringField(1, required=True),
-                                       spanish_translation = messages.StringField(2, required=True))
+
+USER_REQUEST = endpoints.ResourceContainer(
+    user_name=messages.StringField(1),
+    email=messages.StringField(2)
+)
+
+NEW_WORD = endpoints.ResourceContainer(
+    word = messages.StringField(1, required=True),
+    spanish_translation = messages.StringField(2, required=True)
+)
