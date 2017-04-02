@@ -19,8 +19,7 @@ a turn on the board. The first player to connect four wins.
  - main.py: Handler for taskqueue handler.
  - models.py: Entity and message definitions.
  - utils.py: Helper functions.
- - gameboard.py: Contains a list representation of the Connect Four gameboard
-		 and a simple algorith to determine the legality of a move
+ - gameboard.py: Contains a list representation of the Connect Four gameboard and a simple algorithm to determine the legality of a move
  
 ## Endpoints: 
  - **addNewWord**
