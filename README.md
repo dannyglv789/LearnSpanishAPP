@@ -12,7 +12,7 @@ a turn on the board. The first player to connect four wins.
 4. Use urlsafe_game_key to make moves at make_move endpoint untill win or loss.
 5. games can be retrieved at get_user_games endpoint
 
-##Files Included:
+## Files Included:
  - api.py: Contains endpoints and game logic.
  - app.yaml: App configuration.
  - cron.yaml: Cronjob configuration.
@@ -22,7 +22,7 @@ a turn on the board. The first player to connect four wins.
  - gameboard.py: Contains a list representation of the Connect Four gameboard
 		 and a simple algorith to determine the legality of a move
  
-##Endpoints: 
+## Endpoints: 
  - **addNewWord**
     - Method: POST
     - Parameters: word, spanish_translation
