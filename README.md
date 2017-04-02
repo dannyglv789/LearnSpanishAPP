@@ -1,6 +1,6 @@
 # Spanish Word Connect Four
   
-##Game Description:
+## Game Description:
 In Spanish Word Connect Four players receive a a target word in Engish, along with
 three choices for the spanish translation. If the player guesses correctly they are 
 allowed a turn on the Connect Four board. If they guess incorrecctly the cpu is allowed
@@ -60,7 +60,7 @@ a turn on the board. The first player to connect four wins.
     - Returns: List moves in order for each game
     - Description: returns list of moves in order for each game
 	
-##Endpoints Included:
+## Endpoints Included:
  - **create_user**
     - Path: 'user'
     - Method: POST
