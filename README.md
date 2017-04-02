@@ -1,4 +1,4 @@
-#Spanish Word Connect Four
+# Spanish Word Connect Four
   
 ##Game Description:
 In Spanish Word Connect Four players receive a a target word in Engish, along with
