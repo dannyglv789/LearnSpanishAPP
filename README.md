@@ -117,28 +117,28 @@ a turn on the board. The first player to connect four wins.
     - Description: Gets the average number of attempts remaining for all games
     from a previously cached memcache key.
 	
-##Models Added:
- - *HangmanWords*
-	- Stores words created by users, and scrambles them for games
+## Models Added:
+ - *GameWords*
+	- Stores Word entity. The entity is made up of an English target word and the spanish translation
 	
-##Models Included:
+## Models Included:
  - **User**
     - Stores unique user_name and (optional) email address.
     
  - **Game**
-    - Stores unique game states. Associated with User model via KeyProperty.
+    - Stores games. 
     
  - **Score**
     - Records completed games. Associated with Users model via KeyProperty.
 
-##Forms Added:
+## Forms Added:
  - **RankingForm **
     - Used to rank players by win
 	
  - **HistoryForm**
     - Used to return moves by game
 	
-##Forms Included:
+## Forms Included:
  - **GameForm**
     - Representation of a Game's state (urlsafe_key, attempts_remaining,
     game_over flag, message, user_name).
@@ -154,5 +154,5 @@ a turn on the board. The first player to connect four wins.
  - **StringMessage**
     - General purpose String container.
 
-##SendReminderEmail 
+## SendReminderEmail 
  - email is sent to users with 3 or more wins only with good job message 
