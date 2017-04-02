@@ -1,27 +1,26 @@
-#Spanish Word Guessing Game 
-
-## Set-Up Instructions:
-1. The API can be accessed at https://gameapp-1266.appspot.com/_ah/api/explorer
- 
- 
- 
+#Spanish Word Connect Four
+  
 ##Game Description:
-In Learn Spanish users receive a spanish word with a specified number of 
-attempts to guess the english translation. 
+In Spanish Word Connect Four players receive a a target word in Engish, along with
+three choices for the spanish translation. If the player guesses correctly they are 
+allowed a turn on the Connect Four board. If they guess incorrecctly the cpu is allowed
+a turn on the board. The first player to connect four wins.  
 
 1. Create user at create_user endpoint  
 2. Create new game at new_game endpoint
 3. Use urlsafe_game_key to view created game at get_game endpoint
-4. Use urlsafe_game_key to make a move at make_move endpoint untill win or loss.
+4. Use urlsafe_game_key to make moves at make_move endpoint untill win or loss.
 5. games can be retrieved at get_user_games endpoint
 
 ##Files Included:
- - api.py: Contains endpoints and game playing logic.
+ - api.py: Contains endpoints and game logic.
  - app.yaml: App configuration.
  - cron.yaml: Cronjob configuration.
  - main.py: Handler for taskqueue handler.
- - models.py: Entity and message definitions including helper methods.
- - utils.py: Helper function for retrieving ndb.Models by urlsafe Key string.
+ - models.py: Entity and message definitions.
+ - utils.py: Helper functions.
+ - gameboard.py: Contains a list representation of the Connect Four gameboard
+		 and a simple algorith to determine the legality of a move
  
 ##Endpoints: 
  - **addNewWord**
