@@ -1,11 +1,22 @@
 board = [[1, 1], [1, 2], [1, 3], [1, 4], [2, 1], [2, 2], [2, 3], [2, 4], [3, 1], [3, 2], [3, 3], [3, 4], [4, 1], [4, 2], [4, 3], [4, 4]]
 # bottom row is legal at first
 legal = [[1,1], [1, 2], [1, 3], [1, 4]]
-moves = []
+
+moves = {"x_row_1": [[1, 1], [1, 2], [1, 3], [1, 4]],
+         "x_row_2": [[2, 1], [2, 2], [2, 3], [2, 4]],
+         "x_row_3": [[3, 1], [3, 2], [3, 3], [3, 4]],
+         "x_row_4": [[4, 1], [4, 2], [4, 3], [4, 4]],
+         "y_row_1": [[1,1], [2,1], [3,1], [4,1]],
+         "y_row_2": [[1,2], [2,2], [3,2], [4,2]],
+         "y_row_3": [[1,3], [2,3], [3,3], [4,3]],
+         "y_row_4": [[1,4], [2,4], [3,4], [4,4]],
+         "diag_1": [[1,1], [2,2], [3,3],[4,4]],
+         "diag_2": [[4,1], [3,2], [2,3], [1,4]]
+}
 
 def player_move(move):
     """ player_move algorithm. If move is illegal, move is rejected.
-        If move is legal, move is played and the above move becomes legal
+        If move is legal, move is played and the slot above move becomes legal
     """
     if move not in legal:
         print "sorry try again"
@@ -22,7 +33,17 @@ def player_move(move):
         legal_spot = move_index + 4
         if board[legal_spot] not in legal:
             legal.append(board[legal_spot])
+
+        # remove played move from legal list
+        legal.pop(move)
         print legal
         return board[legal_spot]
+
+        # removes moves from moves dictionary. Once one of the possible win
+        # lists is empty, player has won. 
+        for key, value in moves.iteritems():
+            for x in value:
+                if x == move:
+                    value.remove(x)
 
 player_move([1,1])

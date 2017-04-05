@@ -48,6 +48,7 @@ class Game(ndb.Model):
     option_2 = ndb.StringProperty(required=True)
     option_3 = ndb.StringProperty(required=True)
     connect_4_turn = ndb.BooleanProperty(required=True, default=False)
+#    player_moves = ndb.StringProperty(repeated=True)
 
 
     @classmethod

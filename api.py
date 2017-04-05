@@ -122,6 +122,7 @@ class GuessANumberApi(remote.Service):
         if request.guess == game.target:
             # user makes a connect 4 move
             game.new_round(game)
+#            game.connect_4_turn = True
             return StringMessage(message="correct")
         else:
             # computer makes a  connect 4 move
