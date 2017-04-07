@@ -33,7 +33,7 @@ def player_move(move, player):
         legal_spot: the newly legal position based on move_index
     """
     if move not in legal:
-        print "sorry try again"
+        print "sorry try again, move not allowed"
     else:
         # slot above move becomes legal
         move_index = -1

@@ -122,13 +122,14 @@ class Game(ndb.Model):
         return game
 
     def player_move(self, move, player):
+        # move: a list containing two integers
         # player_move algorithm. If move is illegal, move is rejected.
         # If move is legal, move is played and the slot above move becomes legal
         # move_index: the list position of the player move
         # legal_spot: the newly legal position based on move_index
 
         if move not in self.legal:
-            message = "sorry try again"
+            message = "sorry try again move not allowed"
             return message
         else:
             # slot above move becomes legal
@@ -162,7 +163,7 @@ class Game(ndb.Model):
                         if x == move:
                             value.remove(x)
             print move_index
-            return board[legal_spot]
+            return "move played"
     
     def new_round(self,current_game):
         """ switches the target word """
