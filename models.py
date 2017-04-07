@@ -47,6 +47,7 @@ class Game(ndb.Model):
     option_1 = ndb.StringProperty(required=True)
     option_2 = ndb.StringProperty(required=True)
     option_3 = ndb.StringProperty(required=True)
+    answer = ndb.StringProperty(required=True)
     connect_4_turn = ndb.BooleanProperty(required=True, default=False)
 #    player_moves = ndb.StringProperty(repeated=True)
     # connect four game
@@ -113,7 +114,8 @@ class Game(ndb.Model):
                     target=word_entity.word,
                     option_1 = randomized[0],
                     option_2 = randomized[1],
-                    option_3 = randomized[2]
+                    option_3 = randomized[2],
+                    answer = word_entity.spanish_translation
                     )
         game.put()
         
@@ -168,10 +170,25 @@ class Game(ndb.Model):
         entity_key = random.choice(q)
         word_entity = entity_key.get()
         spanish_words = english_spanish_words[1::2]
+
+        # fetch correct answer and two spanish choices
+        incorrect_1 = random.choice(spanish_words)
+        incorrect_2 = random.choice(spanish_words)
+        correct = word_entity.spanish_translation
+
+        # create a random list containing the rigiht answer
+        choices_list = [incorrect_1, incorrect_2, correct]
+        randomized = [random.choice(choices_list),random.choice(choices_list),random.choice(choices_list)]
+        if correct not in randomized:
+            randomized[0] = correct
+            randomized[1] = random.choice(spanish_words)
+            randomized[2] = random.choice(spanish_words)
+            
         current_game.target=word_entity.word
-        current_game.option_1 = random.choice(spanish_words)
-        current_game.option_2 = random.choice(spanish_words)
-        current_game.option_3 = word_entity.spanish_translation
+        current_game.option_1 = randomized[0]
+        current_game.option_2 = randomized[1]
+        current_game.option_3 = randomized[2]
+        current_game.answer = word_entity.spanish_translation
         current_game.put()
     
     def to_form(self):
