@@ -14,7 +14,19 @@ wins = {"x_row_1": [[1, 1], [1, 2], [1, 3], [1, 4]],
          "diag_2": [[4,1], [3,2], [2,3], [1,4]]
 }
 
-def player_move(move):
+computer_wins = {"x_row_1": [[1, 1], [1, 2], [1, 3], [1, 4]],
+         "x_row_2": [[2, 1], [2, 2], [2, 3], [2, 4]],
+         "x_row_3": [[3, 1], [3, 2], [3, 3], [3, 4]],
+         "x_row_4": [[4, 1], [4, 2], [4, 3], [4, 4]],
+         "y_row_1": [[1,1], [2,1], [3,1], [4,1]],
+         "y_row_2": [[1,2], [2,2], [3,2], [4,2]],
+         "y_row_3": [[1,3], [2,3], [3,3], [4,3]],
+         "y_row_4": [[1,4], [2,4], [3,4], [4,4]],
+         "diag_1": [[1,1], [2,2], [3,3],[4,4]],
+         "diag_2": [[4,1], [3,2], [2,3], [1,4]]
+}
+
+def player_move(move, player):
     """ player_move algorithm. If move is illegal, move is rejected.
         If move is legal, move is played and the slot above move becomes legal
         move_index: the list position of the player move
@@ -41,22 +53,44 @@ def player_move(move):
             if i == move:
                 legal.pop(list_pos)
 
-        # removes moves from wins dictionary. Once one of the possible win
-        # lists is empty, player has won. 
-        for key, value in wins.iteritems():
-            for x in value:
-                if x == move:
-                    value.remove(x)
+        # removes move from wins dictionary. Once one of the win
+        # lists is empty, player has won.
+        if player == "player_1":
+            for key, value in wins.iteritems():
+                for x in value:
+                    if x == move:
+                        value.remove(x)
+        else:
+            for key, value in computer_wins.iteritems():
+                for x in value:
+                    if x == move:
+                        value.remove(x)
         print move_index
         return board[legal_spot]
 
-player_move([1,1])
-print legal
-player_move([1,2])
-print legal
-player_move([1,3])
-print legal
-player_move([2,1])
-print legal
+for i in wins:
+    if i == []:
+        print "You won!"
+
+for i in computer_wins:
+    if i == []:
+        print "Sorry you lost."
 
 
+player_move([1,1], "player_1")
+print legal
+player_move([1,2], "player_1")
+print legal
+player_move([1,3], "player_1")
+print legal
+player_move([1,4], "player_1")
+print legal
+
+for i in wins:
+    if wins[i] == []:
+        print  "Hey you won!"
+
+for i in computer_wins:
+    if i == []:
+        print "Sorry you lost."
+        
