@@ -61,14 +61,18 @@ class Game(ndb.Model):
         word_entity = entity_key.get()
         spanish_words = english_spanish_words[1::2]
 
-        # assign correct answer and two choices randomly
+        # fetch correct answer and two spanish choices
         incorrect_1 = random.choice(spanish_words)
         incorrect_2 = random.choice(spanish_words)
         correct = word_entity.spanish_translation
+
+        # create a random list containing the rigiht answer
         choices_list = [incorrect_1, incorrect_2, correct]
         randomized = [random.choice(choices_list),random.choice(choices_list),random.choice(choices_list)]
         if correct not in randomized:
-            randomized[1] = correct
+            randomized[0] = correct
+            randomized[1] = random.choice(spanish_words)
+            randomized[2] = random.choice(spanish_words)
         
         g_user = endpoints.get_current_user()
         user_id = getUserId(g_user)
