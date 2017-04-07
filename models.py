@@ -93,7 +93,7 @@ class Game(ndb.Model):
     
     def new_round(self,current_game):
         """ switches the target word """
-        # query the gamewords for keys then retrieve word entity from random key
+        # retrieve word entity randomly for new round
         q = GameWords.query().fetch(keys_only=True)
         entity_key = random.choice(q)
         word_entity = entity_key.get()

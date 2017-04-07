@@ -119,15 +119,18 @@ class GuessANumberApi(remote.Service):
         if game.game_over:
             return game.to_form('Game already over!')
 
+        if game.connect_4_turn == True:
+            return StringMessage(message="make a connect four move!")
+
         if request.guess == game.target:
-            # user makes a connect 4 move
+            # connect four move set to true
+            game.connect_4_turn = True
             game.new_round(game)
-#            game.connect_4_turn = True
             return StringMessage(message="correct")
         else:
             # computer makes a  connect 4 move
             game.new_round(game)
-            return StringMessage(message="next")
+            return StringMessage(message="incorrect")
 
         """
             # add win to profile
