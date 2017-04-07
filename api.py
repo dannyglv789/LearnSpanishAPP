@@ -162,7 +162,8 @@ class GuessANumberApi(remote.Service):
             return game.to_form(msg)
     """
 
-    @endpoints.method(response_message=StringMessage,
+    @endpoints.method(request_message=GET_GAME_REQUEST,
+                      response_message=StringMessage,
                       path="make_connect_four_move",
                       name="connect_four_move",
                       http_method="POST"
@@ -170,6 +171,8 @@ class GuessANumberApi(remote.Service):
     def make_connect_four_move(self,request):
         """player makes a connect four move"""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
+        game.player_move([4,1], "player_1")
+        return StringMessage(message="move_played")
 
     @endpoints.method(response_message=ScoreForms,
                       path='scores',
