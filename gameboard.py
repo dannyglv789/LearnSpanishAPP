@@ -1,8 +1,8 @@
 board = [[1, 1], [1, 2], [1, 3], [1, 4], [2, 1], [2, 2], [2, 3], [2, 4], [3, 1], [3, 2], [3, 3], [3, 4], [4, 1], [4, 2], [4, 3], [4, 4]]
 # bottom row is legal at first
 legal = [[1,1], [1, 2], [1, 3], [1, 4]]
-
-moves = {"x_row_1": [[1, 1], [1, 2], [1, 3], [1, 4]],
+print legal
+wins = {"x_row_1": [[1, 1], [1, 2], [1, 3], [1, 4]],
          "x_row_2": [[2, 1], [2, 2], [2, 3], [2, 4]],
          "x_row_3": [[3, 1], [3, 2], [3, 3], [3, 4]],
          "x_row_4": [[4, 1], [4, 2], [4, 3], [4, 4]],
@@ -17,13 +17,13 @@ moves = {"x_row_1": [[1, 1], [1, 2], [1, 3], [1, 4]],
 def player_move(move):
     """ player_move algorithm. If move is illegal, move is rejected.
         If move is legal, move is played and the slot above move becomes legal
+        move_index: the list position of the player move
+        legal_spot: the newly legal position based on move_index
     """
     if move not in legal:
         print "sorry try again"
     else:
         # slot above move becomes legal
-        # get the move index so we have a reference point for the next
-        # move that becomes legal, then append new legal move to legal list
         move_index = -1
         for i in board:
             move_index +=1
@@ -35,15 +35,28 @@ def player_move(move):
             legal.append(board[legal_spot])
 
         # remove played move from legal list
-        legal.pop(move)
-        print legal
-        return board[legal_spot]
+        list_pos = -1
+        for i in legal:
+            list_pos +=1
+            if i == move:
+                legal.pop(list_pos)
 
-        # removes moves from moves dictionary. Once one of the possible win
+        # removes moves from wins dictionary. Once one of the possible win
         # lists is empty, player has won. 
-        for key, value in moves.iteritems():
+        for key, value in wins.iteritems():
             for x in value:
                 if x == move:
                     value.remove(x)
+        print move_index
+        return board[legal_spot]
 
 player_move([1,1])
+print legal
+player_move([1,2])
+print legal
+player_move([1,3])
+print legal
+player_move([2,1])
+print legal
+
+
