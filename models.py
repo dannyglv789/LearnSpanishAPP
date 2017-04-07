@@ -128,7 +128,8 @@ class Game(ndb.Model):
         # legal_spot: the newly legal position based on move_index
 
         if move not in self.legal:
-            print "sorry try again"
+            message = "sorry try again"
+            return message
         else:
             # slot above move becomes legal
             move_index = -1
@@ -243,6 +244,11 @@ class NewGameForm(messages.Message):
 class MakeMoveForm(messages.Message):
     """Used to make a move in an existing game"""
     guess = messages.StringField(1, required=True)
+
+class ConnectFourMoveForm(messages.Message):
+    urlsafe_game_key = messages.StringField(1, required=True)
+    vert_pos = messages.IntegerField(2, required=True)
+    hor_pos = messages.IntegerField(3, required=True)
 
 class ScoreForm(messages.Message):
     """ScoreForm for outbound Score information"""

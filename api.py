@@ -14,7 +14,7 @@ from models import User, Game, Score, GameWords, StringMessages, RankingForms
 from models import StringMessage, NewGameForm, GameForm, MakeMoveForm,\
     ScoreForms, RankingForm, HistoryForm, HistoryForms
 from resourcecontainers import NEW_GAME_REQUEST, GET_GAME_REQUEST, \
-     MAKE_MOVE_REQUEST, USER_REQUEST, NEW_WORD
+     MAKE_MOVE_REQUEST, USER_REQUEST, NEW_WORD, CONNECT_FOUR_MOVE_REQUEST
 from utils import get_by_urlsafe, getUserId
 
 MEMCACHE_MOVES_REMAINING = 'MOVES_REMAINING'
@@ -122,7 +122,7 @@ class GuessANumberApi(remote.Service):
         if game.connect_4_turn == True:
             return StringMessage(message="make a connect four move!")
 
-        if request.guess == game.answer:
+        if request.guess == game.target:
             # connect four turn gets set to true
             game.connect_4_turn = True
             game.new_round(game)
@@ -162,7 +162,7 @@ class GuessANumberApi(remote.Service):
             return game.to_form(msg)
     """
 
-    @endpoints.method(request_message=GET_GAME_REQUEST,
+    @endpoints.method(request_message=CONNECT_FOUR_MOVE_REQUEST,
                       response_message=StringMessage,
                       path="make_connect_four_move",
                       name="connect_four_move",
@@ -171,8 +171,8 @@ class GuessANumberApi(remote.Service):
     def make_connect_four_move(self,request):
         """player makes a connect four move"""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
-        game.player_move([4,1], "player_1")
-        return StringMessage(message="move_played")
+        game.player_move([request.vert_pos,request.hor_pos], "player_1")
+        return StringMessage(message=game.player_move([request.vert_pos, request.hor_pos], "player_1"))
 
     @endpoints.method(response_message=ScoreForms,
                       path='scores',
