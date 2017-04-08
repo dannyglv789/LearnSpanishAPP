@@ -77,12 +77,9 @@ class GuessANumberApi(remote.Service):
 
         # create ndb key of kind User from user email
         u_key = ndb.Key(User, user_id)
-
-        # store user in db
         user = User(name=request.user_name, email=request.email, key=u_key)
         user.put()
-
-        # returns a response message confirming user was created
+        
         return StringMessage(message='User {} created!'.format(
                 request.user_name))
 
@@ -94,6 +91,7 @@ class GuessANumberApi(remote.Service):
     def get_game(self, request):
         """Returns game state"""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
+
         if game:
             return GameForm(game_over=game.game_over,
                             urlsafe_key= game.key.urlsafe(),
@@ -171,6 +169,9 @@ class GuessANumberApi(remote.Service):
     def make_connect_four_move(self,request):
         """player makes a connect four move"""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
+
+        if game.game_over == True:
+            return StringMessage(message="Game is over")
         if game.connect_4_turn == False:
             return StringMessage(message="Guess a word!")
 
