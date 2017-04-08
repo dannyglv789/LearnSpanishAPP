@@ -151,7 +151,7 @@ class Game(ndb.Model):
                     self.legal.pop(list_pos)
 
             # removes move from wins dictionary. Once one of the win
-            # lists is empty, player has won.
+            # lists is empty, player or compuer has won.
             if player == "player_1":
                 for key, value in self.wins.iteritems():
                     for x in value:
@@ -162,8 +162,18 @@ class Game(ndb.Model):
                     for x in value:
                         if x == move:
                             value.remove(x)
-            print move_index
             self.connect_four_response = "move played"
+            
+            # check if player or computer has won
+            for i in self.wins:
+                if self.wins[i] == []:
+                    self.connect_four_response = "You win!"
+                    self.game_over = True
+                    
+            for i in self.computer_wins:
+                if self.computer_wins[i] == []:
+                    self.game_over = True
+                    self.connect_four_response = "You lose"
             return self.connect_four_response
     
     def new_round(self,current_game):
@@ -249,8 +259,8 @@ class MakeMoveForm(messages.Message):
 
 class ConnectFourMoveForm(messages.Message):
     urlsafe_game_key = messages.StringField(1, required=True)
-    vert_pos = messages.IntegerField(2, required=True)
-    hor_pos = messages.IntegerField(3, required=True)
+    slot = messages.IntegerField(2, required=True)
+    row = messages.IntegerField(3, required=True)
 
 class ScoreForm(messages.Message):
     """ScoreForm for outbound Score information"""

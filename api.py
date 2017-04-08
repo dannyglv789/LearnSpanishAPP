@@ -176,7 +176,7 @@ class GuessANumberApi(remote.Service):
 
         # Player makes connect four move and now has to guess a word correctly
         # before their next connect four turn
-        game.player_move([request.vert_pos,request.hor_pos], "player_1")
+        game.player_move([request.row,request.slot], "player_1")
         game.connect_4_turn = False
         game.put()
         return StringMessage(message=game.connect_four_response)
