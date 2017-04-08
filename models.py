@@ -49,10 +49,13 @@ class Game(ndb.Model):
     option_3 = ndb.StringProperty(required=True)
     answer = ndb.StringProperty(required=True)
     connect_4_turn = ndb.BooleanProperty(required=True, default=False)
-#    player_moves = ndb.StringProperty(repeated=True)
+    #    player_moves = ndb.StringProperty(repeated=True)
+
     # connect four game
     board = [[1, 1], [1, 2], [1, 3], [1, 4], [2, 1], [2, 2], [2, 3], [2, 4], [3, 1], [3, 2], [3, 3], [3, 4], [4, 1], [4, 2], [4, 3], [4, 4]]
+    # bottom row is legal at first
     legal = [[1,1], [1, 2], [1, 3], [1, 4]]
+
     wins = {"x_row_1": [[1, 1], [1, 2], [1, 3], [1, 4]],
          "x_row_2": [[2, 1], [2, 2], [2, 3], [2, 4]],
          "x_row_3": [[3, 1], [3, 2], [3, 3], [3, 4]],
@@ -76,8 +79,6 @@ class Game(ndb.Model):
          "diag_1": [[1,1], [2,2], [3,3],[4,4]],
          "diag_2": [[4,1], [3,2], [2,3], [1,4]]
     }
-
-    
 
     @classmethod
     def new_game(cls, user):
@@ -118,7 +119,6 @@ class Game(ndb.Model):
                     answer = word_entity.spanish_translation
                     )
         game.put()
-        
         return game
 
     def player_move(self, move, player):
@@ -129,41 +129,42 @@ class Game(ndb.Model):
         # legal_spot: the newly legal position based on move_index
 
         if move not in self.legal:
-            message = "sorry try again move not allowed"
-            return message
+            self.connect_four_response = "sorry try again move not allowed try again"
+            return self.connect_four_response
         else:
             # slot above move becomes legal
             move_index = -1
-            for i in board:
+            for i in self.board:
                 move_index +=1
                 if i == move:
                     break
                 
             legal_spot = move_index + 4
-            if board[legal_spot] not in legal:
-                legal.append(board[legal_spot])
+            if self.board[legal_spot] not in self.legal:
+                self.legal.append(self.board[legal_spot])
 
             # remove played move from legal list
             list_pos = -1
-            for i in legal:
+            for i in self.legal:
                 list_pos +=1
                 if i == move:
-                    legal.pop(list_pos)
+                    self.legal.pop(list_pos)
 
             # removes move from wins dictionary. Once one of the win
             # lists is empty, player has won.
             if player == "player_1":
-                for key, value in wins.iteritems():
+                for key, value in self.wins.iteritems():
                     for x in value:
                         if x == move:
                             value.remove(x)
             else:
-                for key, value in computer_wins.iteritems():
+                for key, value in self.computer_wins.iteritems():
                     for x in value:
                         if x == move:
                             value.remove(x)
             print move_index
-            return "move played"
+            self.connect_four_response = "move played"
+            return self.connect_four_response
     
     def new_round(self,current_game):
         """ switches the target word """

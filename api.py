@@ -53,6 +53,17 @@ class GuessANumberApi(remote.Service):
         # taskqueue.add(url='/tasks/cache_average_attempts')
         return game.to_form()
     
+    @endpoints.method(request_message=GET_GAME_REQUEST,
+                      response_message=StringMessage,
+                      name="new_board",
+                      http_method="POST")
+    def new_game_board(self,request):
+        game = get_by_urlsafe(request.urlsafe_game_key, Game)
+        game.new_board(game)
+        game.put()
+        return StringMessage(message="Board initialized")
+        
+    
     # endpoint for creating a new user
     @endpoints.method(request_message=USER_REQUEST,
                       response_message=StringMessage,
@@ -179,7 +190,7 @@ class GuessANumberApi(remote.Service):
         game.player_move([request.vert_pos,request.hor_pos], "player_1")
         game.connect_4_turn = False
         game.put()
-        return StringMessage(message=game.player_move([request.vert_pos, request.hor_pos], "player_1"))
+        return StringMessage(message=game.connect_four_response)
 
     @endpoints.method(response_message=ScoreForms,
                       path='scores',
