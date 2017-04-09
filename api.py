@@ -61,13 +61,11 @@ class GuessANumberApi(remote.Service):
                       http_method='POST')
     def create_user(self, request):
         """ create a new user """
-
-        # check if a user already exists
         if User.query(User.name == request.user_name).get():
             raise endpoints.ConflictException(
                     'A User with that name already exists!')
 
-        # endpoints.get_current_user() returns a User, otherwise it returns None.
+        # returns a User, otherwise it returns None.
         g_user = endpoints.get_current_user()
         if not g_user:
             raise endpoints.UnauthorizedException('Authorization required')
@@ -246,23 +244,24 @@ class GuessANumberApi(remote.Service):
                       http_method='POST')
     def cancel_game(self,request):
         """ Cancel an active game """
-        game_key = ndb.Key(urlsafe=request.urlsafe_game_key)
-        game = game_key.get()
-
+        game = get_by_urlsafe(request.urlsafe_game_key, Game)
+        
         # check user
         user = endpoints.get_current_user()
         if not user:
             raise endpoints.UnauthorizedException('Authorization required')
-        user_id = getUserId(user)
-        u_key = ndb.Key(User, user_id)
-        if u_key != game.user:
-            raise endpoints.UnauthorizedException('Auth required')
         
+        user_email = getUserId(user)
+        u_key = ndb.Key(User, user_email)
+        user = u_key.get()
+        
+        if user.key != game.user:
+            raise endpoints.UnauthorizedException('not your game')
         
         if game.game_over == False:
-            game_key.delete()
+            game.delete()
         else:
-            raise endpoints.BadRequestException('game not active!')
+            raise endpoints.BadRequestException('game already over')
         return StringMessage(message="game deleted")
 
     @endpoints.method(message_types.VoidMessage, ScoreForms,
