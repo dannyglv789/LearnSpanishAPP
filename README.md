@@ -27,6 +27,12 @@ a turn on the board. The first player to connect four wins.
     - Parameters: word, spanish_translation
     - Returns: key of entity created
     - Description: creates word entity for games
+    
+ - **make_connect_four_move**
+    - Method: POST
+    - Parameters: urlsafe_game_key, row, slot
+    - Returns: confirmation of move or notification of illegal move
+    - Description: player makes a move on the connect four game board
 	
  - **get_user_games**
     - Method: GET
