@@ -128,29 +128,6 @@ class GuessANumberApi(remote.Service):
             game.new_round(game)
             return StringMessage(message="incorrect")
 
-        """
-            #add msg to history
-            msg = 'You win'
-            game.moves.append(msg)
-            prof.put()
-
-            # return win response
-            game.end_game(True)
-            return game.to_form('You win!')
-
-        # guess is incorrect
-        if request.guess != game.target:
-            msg = 'sorry try again!'
-            game.moves.append(msg)
-
-        if game.attempts_remaining < 1:
-            game.end_game(False)
-            return game.to_form(msg + ' Game over!')
-        else:
-            game.put()
-            return game.to_form(msg)
-    """
-
     @endpoints.method(request_message=CONNECT_FOUR_MOVE_REQUEST,
                       response_message=StringMessage,
                       path="make_connect_four_move",
