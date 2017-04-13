@@ -191,7 +191,7 @@ class GuessANumberApi(remote.Service):
             average = float(total_attempts_remaining)/count
             memcache.set(MEMCACHE_MOVES_REMAINING,
                          'The average moves remaining is {:.2f}'.format(average))
-# Task 3 endpoints
+            
     @endpoints.method(message_types.VoidMessage,StringMessages,
                       name='get_user_games',
                       http_method='GET')
