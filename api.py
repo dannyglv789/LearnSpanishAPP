@@ -129,13 +129,6 @@ class GuessANumberApi(remote.Service):
             return StringMessage(message="incorrect")
 
         """
-            # add win to profile
-            user = endpoints.get_current_user()
-            user_id = getUserId(user)
-            u_key = ndb.Key(User, user_id)
-            prof = u_key.get()
-            prof.wins +=1
-
             #add msg to history
             msg = 'You win'
             game.moves.append(msg)
@@ -189,7 +182,7 @@ class GuessANumberApi(remote.Service):
         return ScoreForms(items=[score.to_form() for score in Score.query()])
 
     @endpoints.method(request_message=USER_REQUEST,
-                      response_message=ScoreForms,
+                      response_message=StringMessage,
                       path='scores/user/{user_name}',
                       name='get_user_scores',
                       http_method='GET')
@@ -199,8 +192,8 @@ class GuessANumberApi(remote.Service):
         if not user:
             raise endpoints.NotFoundException(
                     'A User with that name does not exist!')
-        scores = Score.query(Score.user == user.key)
-        return ScoreForms(items=[score.to_form() for score in scores])
+        wins = str(user.wins)
+        return StringMessage(message=wins)
 
     @endpoints.method(response_message=StringMessage,
                       path='games/average_attempts',

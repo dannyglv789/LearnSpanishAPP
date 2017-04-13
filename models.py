@@ -170,6 +170,12 @@ class Game(ndb.Model):
                     self.connect_four_response = "You win!"
                     self.game_over = True
                     
+                    # add win to profile
+                    user_key = self.user
+                    user = user_key.get()
+                    user.wins +=1
+                    user.put()
+                    
             for i in self.computer_wins:
                 if self.computer_wins[i] == []:
                     self.game_over = True

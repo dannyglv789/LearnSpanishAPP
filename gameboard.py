@@ -75,22 +75,3 @@ for i in wins:
 for i in computer_wins:
     if i == []:
         print "Sorry you lost."
-
-
-player_move([1,1], "player_1")
-print legal
-player_move([1,2], "player_1")
-print legal
-player_move([1,3], "player_1")
-print legal
-player_move([1,4], "player_1")
-print legal
-
-for i in wins:
-    if wins[i] == []:
-        print  "Hey you won!"
-
-for i in computer_wins:
-    if i == []:
-        print "Sorry you lost."
-        
