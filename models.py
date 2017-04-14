@@ -52,7 +52,10 @@ class Game(ndb.Model):
     #    player_moves = ndb.StringProperty(repeated=True)
 
     # connect four game
-    board = [[1, 1], [1, 2], [1, 3], [1, 4], [2, 1], [2, 2], [2, 3], [2, 4], [3, 1], [3, 2], [3, 3], [3, 4], [4, 1], [4, 2], [4, 3], [4, 4]]
+    board = [[1, 1], [1, 2], [1, 3], [1, 4],
+             [2, 1], [2, 2], [2, 3], [2, 4],
+             [3, 1], [3, 2], [3, 3], [3, 4],
+             [4, 1], [4, 2], [4, 3], [4, 4]]
     # bottom row is legal at first
     legal = [[1,1], [1, 2], [1, 3], [1, 4]]
 
