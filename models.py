@@ -104,12 +104,15 @@ class Game(ndb.Model):
 
         # create a random list containing the rigiht answer
         choices_list = [incorrect_1, incorrect_2, correct]
-        randomized = [random.choice(choices_list),random.choice(choices_list),random.choice(choices_list)]
+        randomized = [random.choice(choices_list),
+                      random.choice(choices_list),
+                      random.choice(choices_list)
+                      ]
         if correct not in randomized:
             randomized[0] = correct
             randomized[1] = random.choice(spanish_words)
             randomized[2] = random.choice(spanish_words)
-        
+
         g_user = endpoints.get_current_user()
         user_id = getUserId(g_user)
         u_key = ndb.Key(User, user_id)
@@ -118,12 +121,12 @@ class Game(ndb.Model):
         game = Game(
                     user=user,
                     game_over=False,
-                    key = game_key,
+                    key=game_key,
                     target=word_entity.word,
-                    option_1 = randomized[0],
-                    option_2 = randomized[1],
-                    option_3 = randomized[2],
-                    answer = word_entity.spanish_translation
+                    option_1=randomized[0],
+                    option_2=randomized[1],
+                    option_3=randomized[2],
+                    answer=word_entity.spanish_translation
                     )
         game.put()
         return game
@@ -238,6 +241,7 @@ class Game(ndb.Model):
                       guesses=self.attempts_allowed - self.attempts_remaining)
         score.put()
 
+
 class Score(ndb.Model):
     """Score object"""
     user = ndb.KeyProperty(required=True, kind='User')
@@ -260,6 +264,7 @@ class GameForm(messages.Message):
     choice_1 = messages.StringField(4, required=True)
     choice_2 = messages.StringField(5, required=True)
     choice_3 = messages.StringField(6, required=True)
+
     
 class NewGameForm(messages.Message):
     """Used to create a new game"""
@@ -270,10 +275,12 @@ class MakeMoveForm(messages.Message):
     """Used to make a move in an existing game"""
     guess = messages.StringField(1, required=True)
 
+
 class ConnectFourMoveForm(messages.Message):
     urlsafe_game_key = messages.StringField(1, required=True)
     slot = messages.IntegerField(2, required=True)
     row = messages.IntegerField(3, required=True)
+
 
 class ScoreForm(messages.Message):
     """ScoreForm for outbound Score information"""
@@ -292,20 +299,25 @@ class StringMessage(messages.Message):
     """response of a single string message"""
     message = messages.StringField(1, required=True)
 
+
 class StringMessages(messages.Message):
     """StringMessage-- outbound (single) string message"""
     items = messages.MessageField(StringMessage, 1, repeated=True)
+
 
 class RankingForm(messages.Message):
     """ScoreForm for outbound Score information"""
     user_name = messages.StringField(1, required=True)
     wins = messages.IntegerField(2, required=True)
 
+
 class RankingForms(messages.Message):
     user_rankings = messages.MessageField(RankingForm, 1, repeated=True)
 
+
 class HistoryForm(messages.Message):
     move = messages.StringField(1,required=True)
+
 
 class HistoryForms(messages.Message):
     moves = messages.MessageField(HistoryForm, 1, repeated=True)
