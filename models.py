@@ -10,11 +10,14 @@ entities used by the Game. Because these classes are also regular Python
 classes they can include methods (such as 'to_form' and 'new_game').
 every entity is given a datastore key
 """
-#helper function for getting user
+# helper function for getting user
+
+
 def getUserId(user, id_type="email"):
     if id_type == "email":
         return user.email()
-    
+
+
 class GameWords(ndb.Model):
     """  Words for hangman"""
     word = ndb.StringProperty(required=True)
@@ -26,17 +29,18 @@ class GameWords(ndb.Model):
         spanish_words = english_spanish_words[1::2]
         pairs = zip(english_words, spanish_words)
         for i in pairs:
-            new_word = GameWords(word=i[0],spanish_translation=i[1])
+            new_word = GameWords(word=i[0], spanish_translation=i[1])
             new_word.put()
         return "words added to datastore"
-    
+
 
 class User(ndb.Model):
     """User profile"""
     name = ndb.StringProperty(required=True)
-    email =ndb.StringProperty()
+    email = ndb.StringProperty()
     receives_updates = ndb.BooleanProperty(default=False)
     wins = ndb.IntegerProperty(default=0)
+
 
 class Game(ndb.Model):
     """Game object"""
@@ -57,31 +61,31 @@ class Game(ndb.Model):
              [3, 1], [3, 2], [3, 3], [3, 4],
              [4, 1], [4, 2], [4, 3], [4, 4]]
     # bottom row is legal at first
-    legal = [[1,1], [1, 2], [1, 3], [1, 4]]
+    legal = [[1, 1], [1, 2], [1, 3], [1, 4]]
 
     wins = {"x_row_1": [[1, 1], [1, 2], [1, 3], [1, 4]],
-         "x_row_2": [[2, 1], [2, 2], [2, 3], [2, 4]],
-         "x_row_3": [[3, 1], [3, 2], [3, 3], [3, 4]],
-         "x_row_4": [[4, 1], [4, 2], [4, 3], [4, 4]],
-         "y_row_1": [[1,1], [2,1], [3,1], [4,1]],
-         "y_row_2": [[1,2], [2,2], [3,2], [4,2]],
-         "y_row_3": [[1,3], [2,3], [3,3], [4,3]],
-         "y_row_4": [[1,4], [2,4], [3,4], [4,4]],
-         "diag_1": [[1,1], [2,2], [3,3],[4,4]],
-         "diag_2": [[4,1], [3,2], [2,3], [1,4]]
-    }
+            "x_row_2": [[2, 1], [2, 2], [2, 3], [2, 4]],
+            "x_row_3": [[3, 1], [3, 2], [3, 3], [3, 4]],
+            "x_row_4": [[4, 1], [4, 2], [4, 3], [4, 4]],
+            "y_row_1": [[1, 1], [2, 1], [3, 1], [4, 1]],
+            "y_row_2": [[1, 2], [2, 2], [3, 2], [4, 2]],
+            "y_row_3": [[1, 3], [2, 3], [3, 3], [4, 3]],
+            "y_row_4": [[1, 4], [2, 4], [3, 4], [4, 4]],
+            "diag_1": [[1, 1], [2, 2], [3, 3], [4, 4]],
+            "diag_2": [[4, 1], [3, 2], [2, 3], [1, 4]]
+            }
 
     computer_wins = {"x_row_1": [[1, 1], [1, 2], [1, 3], [1, 4]],
-         "x_row_2": [[2, 1], [2, 2], [2, 3], [2, 4]],
-         "x_row_3": [[3, 1], [3, 2], [3, 3], [3, 4]],
-         "x_row_4": [[4, 1], [4, 2], [4, 3], [4, 4]],
-         "y_row_1": [[1,1], [2,1], [3,1], [4,1]],
-         "y_row_2": [[1,2], [2,2], [3,2], [4,2]],
-         "y_row_3": [[1,3], [2,3], [3,3], [4,3]],
-         "y_row_4": [[1,4], [2,4], [3,4], [4,4]],
-         "diag_1": [[1,1], [2,2], [3,3],[4,4]],
-         "diag_2": [[4,1], [3,2], [2,3], [1,4]]
-    }
+                     "x_row_2": [[2, 1], [2, 2], [2, 3], [2, 4]],
+                     "x_row_3": [[3, 1], [3, 2], [3, 3], [3, 4]],
+                     "x_row_4": [[4, 1], [4, 2], [4, 3], [4, 4]],
+                     "y_row_1": [[1, 1], [2, 1], [3, 1], [4, 1]],
+                     "y_row_2": [[1, 2], [2, 2], [3, 2], [4, 2]],
+                     "y_row_3": [[1, 3], [2, 3], [3, 3], [4, 3]],
+                     "y_row_4": [[1, 4], [2, 4], [3, 4], [4, 4]],
+                     "diag_1": [[1, 1], [2, 2], [3, 3], [4, 4]],
+                     "diag_2": [[4, 1], [3, 2], [2, 3], [1, 4]]
+                     }
 
     @classmethod
     def new_game(cls, user):
