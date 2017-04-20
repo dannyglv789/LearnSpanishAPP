@@ -11,15 +11,15 @@ from google.appengine.api import memcache
 from google.appengine.api import taskqueue
 from google.appengine.ext import ndb
 from models import User, Game, Score, GameWords, StringMessages, RankingForms
-from models import StringMessage, NewGameForm, GameForm, MakeMoveForm,\
-    ScoreForms, RankingForm, HistoryForm, HistoryForms
-from resourcecontainers import NEW_GAME_REQUEST, GET_GAME_REQUEST, \
-     MAKE_MOVE_REQUEST, USER_REQUEST, NEW_WORD, CONNECT_FOUR_MOVE_REQUEST
+from models import StringMessage, NewGameForm, GameForm, MakeMoveForm
+from models import ScoreForms, RankingForm, HistoryForm, HistoryForms
+from resourcecontainers import NEW_GAME_REQUEST, GET_GAME_REQUEST
+from resourcecontainers import MAKE_MOVE_REQUEST, USER_REQUEST, NEW_WORD
+from resourcecontainers import CONNECT_FOUR_MOVE_REQUEST
 from utils import get_by_urlsafe, getUserId
 
 MEMCACHE_MOVES_REMAINING = 'MOVES_REMAINING'
 
-# our api name and verison
 @endpoints.api(name='learnspanish', version='v1')
 class GuessANumberApi(remote.Service):
     """Game API"""
@@ -126,6 +126,8 @@ class GuessANumberApi(remote.Service):
         else:
             # computer makes a  connect 4 move
             game.new_round(game)
+            cpu_move = random.choice(game.legal)
+            game.player_move([cpu_move[0], cpu_move[1]], "player_2")
             return StringMessage(message="incorrect")
 
     @endpoints.method(request_message=CONNECT_FOUR_MOVE_REQUEST,
