@@ -20,13 +20,14 @@ from utils import get_by_urlsafe, getUserId
 
 MEMCACHE_MOVES_REMAINING = 'MOVES_REMAINING'
 
+
 @endpoints.api(name='learnspanish', version='v1')
 class GuessANumberApi(remote.Service):
     """Game API"""
-    @endpoints.method(message_types.VoidMessage,StringMessage,
+    @endpoints.method(message_types.VoidMessage, StringMessage,
                       name='AddNewWord',
                       http_method='POST')
-    def add_word(self,request):
+    def add_word(self, request):
         """Add list of words to datastore"""
         GameWords.add_words_from_list()
         return StringMessage(message="words added")
@@ -35,7 +36,6 @@ class GuessANumberApi(remote.Service):
                       response_message=GameForm,
                       name='new_game',
                       http_method='POST')
-    
     def new_game(self, request):
         """Creates new game."""
         user = User.query(User.name == request.user_name).get()
@@ -46,13 +46,13 @@ class GuessANumberApi(remote.Service):
             game = Game.new_game(user.key)
         except ValueError:
             raise endpoints.BadRequestException('bad request')
-            
+
         # Use a task queue to update the average attempts remaining.
         # This operation is not needed to complete the creation of a new game
         # so it is performed out of sequence.
         # taskqueue.add(url='/tasks/cache_average_attempts')
         return game.to_form()
-    
+
     # endpoint for creating a new user
     @endpoints.method(request_message=USER_REQUEST,
                       response_message=StringMessage,
@@ -77,7 +77,7 @@ class GuessANumberApi(remote.Service):
         u_key = ndb.Key(User, user_id)
         user = User(name=request.user_name, email=request.email, key=u_key)
         user.put()
-        
+
         return StringMessage(message='User {} created!'.format(
                 request.user_name))
 
@@ -92,11 +92,11 @@ class GuessANumberApi(remote.Service):
 
         if game:
             return GameForm(game_over=game.game_over,
-                            urlsafe_key= game.key.urlsafe(),
+                            urlsafe_key=game.key.urlsafe(),
                             target=game.target,
-                            choice_1 = game.option_1,
-                            choice_2 = game.option_2,
-                            choice_3 = game.option_3
+                            choice_1=game.option_1,
+                            choice_2=game.option_2,
+                            choice_3=game.option_3
                             )
         else:
             raise endpoints.NotFoundException('Game not found!')
@@ -211,8 +211,8 @@ class GuessANumberApi(remote.Service):
                 activeGames.append(StringMessage(message=game.key.urlsafe()))
         return StringMessages(items=activeGames)
 
-    @endpoints.method(GET_GAME_REQUEST,StringMessage,
-                      name = 'cancel_game',
+    @endpoints.method(GET_GAME_REQUEST, StringMessage,
+                      name='cancel_game',
                       http_method='POST')
     def cancel_game(self,request):
         """ Cancel an active game """
@@ -237,8 +237,8 @@ class GuessANumberApi(remote.Service):
         return StringMessage(message="game deleted")
 
     @endpoints.method(message_types.VoidMessage, ScoreForms,
-                      name = 'get_high_scores',
-                      http_method = 'GET')
+                      name='get_high_scores',
+                      http_method='GET')
     def get_high_scores(self, request):
         """ get high scores """
         q = Score.query()
@@ -271,9 +271,5 @@ class GuessANumberApi(remote.Service):
             for m in game.moves:
                 history.append(HistoryForm(move=m))
             return HistoryForms(moves = history)
-        
-        
-    
-        
 
 api = endpoints.api_server([GuessANumberApi])
