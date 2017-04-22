@@ -111,7 +111,7 @@ class GuessANumberApi(remote.Service):
         # retrieve the game with the urlsafe key, then the target
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
         target = game.target
-        
+
         if game.game_over:
             return game.to_form('Game already over!')
 
@@ -136,7 +136,7 @@ class GuessANumberApi(remote.Service):
                       name="connect_four_move",
                       http_method="POST"
                       )
-    def make_connect_four_move(self,request):
+    def make_connect_four_move(self, request):
         """player makes a connect four move"""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
 
@@ -147,7 +147,7 @@ class GuessANumberApi(remote.Service):
 
         # Player makes connect four move and now has to guess a word correctly
         # before their next connect four turn
-        game.player_move([request.row,request.slot], "player_1")
+        game.player_move([request.row, request.slot], "player_1")
         game.connect_4_turn = False
         game.put()
         return StringMessage(message=game.connect_four_response)
@@ -193,11 +193,11 @@ class GuessANumberApi(remote.Service):
             average = float(total_attempts_remaining)/count
             memcache.set(MEMCACHE_MOVES_REMAINING,
                          'The average moves remaining is {:.2f}'.format(average))
-            
-    @endpoints.method(message_types.VoidMessage,StringMessages,
+
+    @endpoints.method(message_types.VoidMessage, StringMessages,
                       name='get_user_games',
                       http_method='GET')
-    def get_user_games(self,request):
+    def get_user_games(self, request):
         """ Get Active user games"""
         # make sure user is authed
         user = endpoints.get_current_user()
@@ -214,22 +214,22 @@ class GuessANumberApi(remote.Service):
     @endpoints.method(GET_GAME_REQUEST, StringMessage,
                       name='cancel_game',
                       http_method='POST')
-    def cancel_game(self,request):
+    def cancel_game(self, request):
         """ Cancel an active game """
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
-        
+
         # check user
         user = endpoints.get_current_user()
         if not user:
             raise endpoints.UnauthorizedException('Authorization required')
-        
+
         user_email = getUserId(user)
         u_key = ndb.Key(User, user_email)
         user = u_key.get()
-        
+
         if user.key != game.user:
             raise endpoints.UnauthorizedException('not your game')
-        
+
         if game.game_over == False:
             game.delete()
         else:
@@ -246,23 +246,23 @@ class GuessANumberApi(remote.Service):
         q = q.fetch(5)
         return ScoreForms(items=[score.to_form() for score in q])
 
-    @endpoints.method(message_types.VoidMessage,RankingForms,
-                      name = 'get_user_rankings',
-                      http_method = 'GET')
+    @endpoints.method(message_types.VoidMessage, RankingForms,
+                      name='get_user_rankings',
+                      http_method='GET')
     def get_user_rankings(self,request):
         """ get user rankings """
         q = User.query()
         q = q.order(-User.wins)
-        
+
         rankings = []
         for u in q:
             rankings.append(RankingForm(user_name=u.name, wins=u.wins))
         return RankingForms(user_rankings=rankings)
 
-    @endpoints.method(GET_GAME_REQUEST,HistoryForms,
-                      name = 'get_game_history',
-                      http_method = 'GET')
-    def get_game_history(self,request):
+    @endpoints.method(GET_GAME_REQUEST, HistoryForms,
+                      name='get_game_history',
+                      http_method='GET')
+    def get_game_history(self, request):
         """ get game history"""
         game = get_by_urlsafe(request.urlsafe_game_key, Game)
 
@@ -270,6 +270,6 @@ class GuessANumberApi(remote.Service):
             history = []
             for m in game.moves:
                 history.append(HistoryForm(move=m))
-            return HistoryForms(moves = history)
+            return HistoryForms(moves=history)
 
 api = endpoints.api_server([GuessANumberApi])
