@@ -122,6 +122,8 @@ class GuessANumberApi(remote.Service):
             # connect four turn gets set to true
             game.connect_4_turn = True
             game.new_round(game)
+            game.moves.append(request.guess)
+            game.put()
             return StringMessage(message="correct")
         else:
             # computer makes a  connect 4 move
