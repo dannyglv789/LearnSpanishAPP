@@ -53,7 +53,7 @@ class Game(ndb.Model):
     option_3 = ndb.StringProperty(required=True)
     answer = ndb.StringProperty(required=True)
     connect_4_turn = ndb.BooleanProperty(required=True, default=False)
-    #    player_moves = ndb.StringProperty(repeated=True)
+    move_count = ndb.IntegerProperty(default=0)
 
     # connect four game
     board = [[1, 1], [1, 2], [1, 3], [1, 4],
@@ -185,6 +185,14 @@ class Game(ndb.Model):
                     user = user_key.get()
                     user.wins +=1
                     user.put()
+
+                    # add score
+                    score = Score(user=self.user,
+                                  date=date.today(),
+                                  won=True,
+                                  guesses=self.move_count
+                                  )
+                    score.put()
                     
             for i in self.computer_wins:
                 if self.computer_wins[i] == []:
@@ -230,16 +238,6 @@ class Game(ndb.Model):
         form.choice_2 = self.option_2
         form.choice_3 = self.option_3
         return form
-
-    def end_game(self, won=False):
-        """Ends the game - if won is True, the player won. - if won is False,
-        the player lost."""
-        self.game_over = True
-        self.put()
-        # Add the game to the score 'board'
-        score = Score(user=self.user, date=date.today(), won=won,
-                      guesses=self.attempts_allowed - self.attempts_remaining)
-        score.put()
 
 
 class Score(ndb.Model):
