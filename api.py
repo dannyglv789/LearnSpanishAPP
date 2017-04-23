@@ -130,7 +130,8 @@ class GuessANumberApi(remote.Service):
             game.new_round(game)
             cpu_move = random.choice(game.legal)
             game.player_move([cpu_move[0], cpu_move[1]], "player_2")
-            game.moves.append("wrong guess, cpu turn")
+            game.moves.append("wrong guess, cpu move " + str(cpu_move[0]) + " "
+                              + str(cpu_move[1]))
             game.put()
             return StringMessage(message="incorrect")
 
@@ -149,9 +150,9 @@ class GuessANumberApi(remote.Service):
         if game.connect_4_turn == False:
             return StringMessage(message="Guess a word!")
 
-        # Player makes connect four move and now has to guess a word correctly
-        # before their next connect four turn
+        # Player makes connect four move
         game.player_move([request.row, request.slot], "player_1")
+        game.moves.append(str(request.row) + " " + str(request.slot))
         game.connect_4_turn = False
         game.put()
         return StringMessage(message=game.connect_four_response)
