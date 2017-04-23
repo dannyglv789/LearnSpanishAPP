@@ -130,6 +130,8 @@ class GuessANumberApi(remote.Service):
             game.new_round(game)
             cpu_move = random.choice(game.legal)
             game.player_move([cpu_move[0], cpu_move[1]], "player_2")
+            game.moves.append("wrong guess, cpu turn")
+            game.put()
             return StringMessage(message="incorrect")
 
     @endpoints.method(request_message=CONNECT_FOUR_MOVE_REQUEST,
